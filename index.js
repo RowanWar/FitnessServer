@@ -3,6 +3,10 @@ const pool = require('./pool.js')
 const app = express()
 
 app.get('/', async (req, res) => {
+  res.send('OK WORLD')
+});
+
+app.get('/api/getEquipment', async (req, res) => {
   pool.query('SELECT * FROM equipment', (err, results) => {
     if (err) {
       res.json('Error encountered!');
@@ -14,6 +18,6 @@ app.get('/', async (req, res) => {
     console.log(data);
     res.status(200).json(data)
   })
-})
+});
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
