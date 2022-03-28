@@ -7,7 +7,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/api/getEquipment', async (req, res) => {
-  pool.query('SELECT * FROM equipment', (err, results) => {
+  pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equipment_type_id = et.equipment_type_id', (err, results) => {
     if (err) {
       res.json('Error encountered!');
       console.log('Error encountered: ' + err); // Returns error to console only for securiy purposes
