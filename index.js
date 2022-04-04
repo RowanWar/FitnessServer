@@ -46,26 +46,26 @@ app.get('/api/getAllReservations', async (req, res) => {
   })
 });
 
+// Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
 app.get('/api/getReservation/:id', async (req, res) => {
   //const id = parseInt(req.params.id);
   const id = req.params.id;
   try {
     pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
-      const data = results.rows;
+      // const data = results.rows;
       if (err) {
         // Returns detailed error to console only for securiy reasons.
         console.log('Error encountered: ' + err);
         return (res.json('Error encountered!'));
       }
 
-      // Think redundant
-      else if (data.length === 0) {
+      else if (results.rows.length === 0) {
         console.log('No reservation with this ID');
         res.status(200).json('No reservation with this ID');
       }
 
       else {
-        res.status(200).json(data);
+        res.status(200).json(results.rows);
       }
 
     })
