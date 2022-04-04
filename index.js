@@ -59,12 +59,12 @@ app.get('/api/getReservation/:id', async (req, res) => {
       }
 
       // Think redundant
-      else if (data.length === 0) {
-        console.log('No reservation with ID of $1', [id]);
-        res.json('No reservation with ID of $1', [id]);
-
-        return;
-      }
+      // else if (data.length === 0) {
+      //   console.log('No reservation with ID of $1', [id]);
+      //   res.json('No reservation with ID of $1', [id]);
+      //
+      //   return;
+      // }
       console.log(res.status);
       res.status(200).json(data);
     })
