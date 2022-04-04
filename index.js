@@ -49,27 +49,30 @@ app.get('/api/getAllReservations', async (req, res) => {
 app.get('/api/getReservation/:id', async (req, res) => {
   //const id = parseInt(req.params.id);
   const id = req.params.id;
-  
-  pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
-    const data = results.rows;
-    if (err) {
-      // Returns detailed error to console only for securiy reasons.
-      console.log('Error encountered: ' + err);
-      return (res.json('Error encountered!'));
-    }
+  try {
+    pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
+      const data = results.rows;
+      if (err) {
+        // Returns detailed error to console only for securiy reasons.
+        console.log('Error encountered: ' + err);
+        return (res.json('Error encountered!'));
+      }
 
-    else if (data.length === 0) {
-      console.log('No reservation with ID of $1', [id]);
-      res.json('No reservation with ID of $1', [id]);
+      else if (data.length === 0) {
+        console.log('No reservation with ID of $1', [id]);
+        res.json('No reservation with ID of $1', [id]);
 
-      return;
-    }
-    else {
-      console.log(res.status);
-      res.status(200).json(data);
-    }
+        return;
+      }
+      else {
+        console.log(res.status);
+        res.status(200).json(data);
+      }
+    })
+  } catch (catchError) {
+    console.error(catchError);
+  }
 
-  })
 });
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
