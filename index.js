@@ -48,8 +48,9 @@ app.get('/api/getAllReservations', async (req, res) => {
 
 app.get('/api/getReservation', async (req, res) => {
   const id = parseInt(req.params.id)
-  const data = results.rows;
+
   pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
+    const data = results.rows;
     if (err) {
       // Returns detailed error to console only for securiy reasons.
       console.log('Error encountered: ' + err);
