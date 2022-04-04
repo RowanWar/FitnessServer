@@ -57,6 +57,7 @@ app.get('/api/getReservation', async (req, res) => {
     }
 
     else if (data.length === 0) {
+      console.log('No reservation with ID of $1', [id]);
       res.json('No reservation with ID of $1', [id]);
 
       return;
