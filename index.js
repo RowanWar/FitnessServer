@@ -33,8 +33,21 @@ app.get('/api/getUser', async (req, res) => {
   })
 });
 
-app.get('/api/getReservations', async (req, res) => {
+app.get('/api/getAllReservations', async (req, res) => {
   pool.query('SELECT * FROM reservation', (err, results) => {
+    if (err) {
+      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      return (res.json('Error encountered!'));
+    }
+
+    res.status(200).json(results.rows);
+  })
+});
+
+app.get('/api/getReservation', async (req, res) => {
+  const id = parseInt(req.params.id)
+
+  pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
     if (err) {
       console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
       return (res.json('Error encountered!'));
