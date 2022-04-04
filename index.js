@@ -23,9 +23,8 @@ app.get('/api/getEquipment', async (req, res) => {
 app.get('/api/getUser', async (req, res) => {
   pool.query('SELECT * FROM user', (err, results) => {
     if (err) {
-      res.json('Error encountered!');
-      console.log('Error encountered: ' + err); // Returns error to console only for securiy purposes
-      return;
+      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      return (res.json('Error encountered!'));
     }
 
     let data = results.rows // Assignsn shorter identifier to results
@@ -33,5 +32,16 @@ app.get('/api/getUser', async (req, res) => {
     res.status(200).json(data)
   })
 });
+
+app.get('/api/getReservations', async (req, res) => {
+  pool.query('SELECT * FROM reservation'), (err, results) => {
+    if (err) {
+      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      return (res.json('Error encountered!'));
+    }
+
+    res.status(200).json(results.rows);
+  }
+})
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
