@@ -46,8 +46,8 @@ app.get('/api/getAllReservations', async (req, res) => {
   })
 });
 
-app.get('/api/getReservation', async (req, res) => {
-  const id = parseInt(req.params.id)
+app.get('/api/getReservation/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
 
   pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
     const data = results.rows;
