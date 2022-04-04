@@ -60,16 +60,14 @@ app.get('/api/getReservation/:id', async (req, res) => {
 
       // Think redundant
       else if (data.length === 0) {
-        try {
-          console.log('No reservation with this ID');
-          res.status(200).json('No reservation with this ID');
-        } catch {
-          console.error(error)
-        }
-
+        console.log('No reservation with this ID');
+        res.status(200).json('No reservation with this ID');
       }
 
-      res.status(200).json(data);
+      else {
+        res.status(200).json(data);
+      }
+
     })
   } catch (catchError) {
     console.error(catchError);
