@@ -40,8 +40,12 @@ app.get('/api/getReservations', async (req, res) => {
       return (res.json('Error encountered!'));
     }
 
+
+    // let data = results.rows;
+    // res.status(200).json(data)
+    console.log(res.status);
     res.status(200).json(results.rows);
   }
-})
+});
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
