@@ -23,7 +23,8 @@ app.get('/api/getEquipment', async (req, res) => {
 app.get('/api/getUser', async (req, res) => {
   pool.query('SELECT * FROM user', (err, results) => {
     if (err) {
-      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      // Returns detailed error to console only for securiy reasons.
+      console.log('Error encountered: ' + err);
       return (res.json('Error encountered!'));
     }
 
@@ -36,7 +37,8 @@ app.get('/api/getUser', async (req, res) => {
 app.get('/api/getAllReservations', async (req, res) => {
   pool.query('SELECT * FROM reservation', (err, results) => {
     if (err) {
-      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      // Returns detailed error to console only for securiy reasons.
+      console.log('Error encountered: ' + err);
       return (res.json('Error encountered!'));
     }
 
@@ -46,18 +48,24 @@ app.get('/api/getAllReservations', async (req, res) => {
 
 app.get('/api/getReservation', async (req, res) => {
   const id = parseInt(req.params.id)
-
+  const data = results.rows;
   pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
     if (err) {
-      console.log('Error encountered: ' + err); // Returns detailed error to console only for securiy reasons.
+      // Returns detailed error to console only for securiy reasons.
+      console.log('Error encountered: ' + err);
       return (res.json('Error encountered!'));
     }
 
+    else if (data.length === 0) {
+      res.json('No reservation with ID of $1', [id]);
 
-    // let data = results.rows;
-    // res.status(200).json(data)
-    console.log(res.status);
-    res.status(200).json(results.rows);
+      return;
+    }
+    else {
+      console.log(res.status);
+      res.status(200).json(data);
+    }
+
   })
 });
 
