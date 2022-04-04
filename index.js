@@ -68,8 +68,6 @@ app.get('/api/getReservation/:id', async (req, res) => {
     })
   } catch (catchError) {
     console.error(catchError);
-
-    return;
   }
 
 });
