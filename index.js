@@ -81,7 +81,7 @@ app.get('/api/updateReservation/:id', async (req, res) => {
   try {
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
     // Queries the reservation via passed ID param above
-    pool.query('SELECT * FROM reservation WHERE reservation_id = $1 r JOIN equipment e ON r.equip_id = e.equip_id ORDER BY r.reserve_time DESC', [id], (err, results) => {
+    pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
 
       if (err) {
         // Returns detailed error to console only for securiy reasons.
