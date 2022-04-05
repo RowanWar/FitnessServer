@@ -97,7 +97,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
       else {
         // res.status(200).json(results.rows.reservation_id);
         // res.status(200).json(results.rows);
-        req.is_available = "false";
+        res.is_available = "false";
         res.status(200).json(results.rows);
       }
     })
