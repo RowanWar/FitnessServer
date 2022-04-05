@@ -75,7 +75,7 @@ app.get('/api/getReservation/:id', async (req, res) => {
   }
 });
 
-app.get('/api/updateReservation/:id', async (req, res) => {
+app.put('/api/updateReservation/:id', async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -96,6 +96,8 @@ app.get('/api/updateReservation/:id', async (req, res) => {
 
       else {
         // res.status(200).json(results.rows.reservation_id);
+        // res.status(200).json(results.rows);
+        req.is_available = "false";
         res.status(200).json(results.rows);
       }
     })
