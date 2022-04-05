@@ -81,12 +81,12 @@ app.put('/api/updateReservation/:id', async (req, res) => {
 
   query = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *'
   values = ['6', '1', 'Categ name', 'Categ description']
-  pool.query(query, values, (err, res) => {
+  pool.query(query, values, (err, results) => {
     if (err) {
       console.log(err.stack)
     }
     else {
-      console.log(res.rows[0]);
+      console.log(results.rows[0]);
       res.status(200).json(results.rows);
     }
   })
