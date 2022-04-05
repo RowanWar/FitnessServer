@@ -85,11 +85,19 @@ app.put('/api/updateReservation/:id', async (req, res) => {
   // Passes in the id via the request paramter so it knows which reservation to amend
   const equipValues = [false, id];
 
-  pool.query(resQuery, resValues, (err, results) => {
-    if (err) {
-      console.log(err.stack)
-    } else {
-      res.status(200).json(results.rows);
+  pool.query(resQuery, resValues)
+    .then (res => {
+      console.log(res.rows)
+    })
+    .then (res2 => {
+      pool.query(equipQuery, equipValues)
+    })
+    .then (res3 => {
+      console.log('Success!')
+    })
+    .catch(e => console.error(e.stack))
+
+      // res.status(200).json(results.rows);
       // pool.query(resQuery, equipValues, (err, results) => {
       //   if (err) {
       //     console.log(err.stack)
@@ -98,9 +106,8 @@ app.put('/api/updateReservation/:id', async (req, res) => {
       //     res.status(200).json(results.rows);
       //   }
       // })
-    }
-  })
-});
+//   })
+// );
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
     // Queries the reservation via passed ID param above
     // pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
