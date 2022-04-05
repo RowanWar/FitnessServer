@@ -84,7 +84,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
     // Queries the reservation via passed ID param above
     // pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
     // pool.query(UPDATE "reservation")
-    pool.query(INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES('6', '1', 'Categ name', 'Categ description'));
+    pool.query(INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES('6', '1', 'Categ name', 'Categ description'), (err, results) => {
 
       if (err) {
         // Returns detailed error to console only for securiy reasons.
