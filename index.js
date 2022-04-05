@@ -88,10 +88,11 @@ app.put('/api/updateReservation/:id', async (req, res) => {
   pool.query(resQuery, resValues)
     .then (res => {
       console.log(res.rows)
+      pool.query(equipQuery, equipValues)
     })
     .then (res2 => {
-      pool.query(equipQuery, equipValues)
-      console.log(res2.rows);
+      console.log(res2.rows)
+      // pool.query(equipQuery, equipValues)
     })
     .then (res3 => {
       console.log('Success!')
