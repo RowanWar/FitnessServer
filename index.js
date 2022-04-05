@@ -48,11 +48,12 @@ app.get('/api/getAllReservations', async (req, res) => {
 
 // Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
 app.get('/api/getReservation/:id', async (req, res) => {
-  //const id = parseInt(req.params.id);
   const id = req.params.id;
+
   try {
+    // Queries the reservation via passed ID param above
     pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
-      // const data = results.rows;
+
       if (err) {
         // Returns detailed error to console only for securiy reasons.
         console.log('Error encountered: ' + err);
@@ -67,12 +68,42 @@ app.get('/api/getReservation/:id', async (req, res) => {
       else {
         res.status(200).json(results.rows);
       }
-
     })
-  } catch (catchError) {
+  }
+  catch (catchError) {
     console.error(catchError);
   }
-
 });
+
+app.get('/api/updateReservation/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
+    // Queries the reservation via passed ID param above
+    pool.query('SELECT * FROM reservation WHERE reservation_id = $1 r JOIN equipment e ON r.equip_id = e.equip_id ORDER BY r.reserve_time DESC', [id], (err, results) => {
+
+      if (err) {
+        // Returns detailed error to console only for securiy reasons.
+        console.log('Error encountered: ' + err);
+        return (res.json('Error encountered!'));
+      }
+
+      else if (results.rows.length === 0) {
+        console.log('No reservation with this ID');
+        res.status(200).json('No reservation with this ID');
+      }
+
+      else {
+        // res.status(200).json(results.rows.reservation_id);
+        res.status(200).json(results.rows);
+      }
+    })
+  }
+  catch (catchError) {
+    console.error(catchError);
+  }
+});
+
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
