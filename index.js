@@ -83,7 +83,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
   const resValues = ['6', '1', 'Categ name', 'Categ description'];
   const equipQuery = 'UPDATE "equipment" SET "is_available" = $1 WHERE equip_id = $2';
   // Passes in the id via the request paramter so it knows which reservation to amend
-  const equipValues = [false, id];
+  const equipValues = ['false', id];
 
   pool.query(resQuery, resValues, (err, results) => {
     if (err) {
