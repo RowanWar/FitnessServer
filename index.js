@@ -52,7 +52,7 @@ app.get('/api/getReservation/:id', async (req, res) => {
 
   try {
     // Queries the reservation via passed ID param above
-    pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1', [id], (err, results) => {
+    pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
 
       if (err) {
         // Returns detailed error to console only for securiy reasons.
@@ -83,7 +83,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
   resValues = ['6', '1', 'Categ name', 'Categ description'];
   equipQuery = 'UPDATE "equipment" SET "is_available" = $1 WHERE equip_id = $2';
   // Passes in the id via the request paramter so it knows which reservation to amend
-  equipValues = ['false', id];
+  equipValues = [false, id];
 
   pool.query(resQuery, resValues, (err, results) => {
     if (err) {
@@ -92,10 +92,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
       pool.query(resQuery, equipValues, (err, results) => {
         if (err) {
           console.log(err.stack)
-        }
-        else {
-        // add new query here into equipment to update is_available seperately
-
+        } else {
           console.log(results.rows[0]);
           res.status(200).json(results.rows);
         }
