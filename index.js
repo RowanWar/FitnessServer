@@ -96,7 +96,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
       console.log('Success!')
     })
     .catch(e => console.error(e.stack))
-
+});
       // res.status(200).json(results.rows);
       // pool.query(resQuery, equipValues, (err, results) => {
       //   if (err) {
