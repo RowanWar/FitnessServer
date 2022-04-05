@@ -75,45 +75,50 @@ app.get('/api/getReservation/:id', async (req, res) => {
   }
 });
 
-app.put('/api/updateReservation/:id', async (req, res) => {
+app.put('/api/createReservation/:id', async (req, res) => {
   const id = req.params.id;
   // const updatedReservation = req.body;
 
-  const resQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
-  const resValues = ['6', '1', 'Categ name', 'Categ description'];
-  const equipQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
-  // Passes in the id via the request paramter so it knows which reservation to amend
-  const equipValues = [false, id];
+  const checkEquipAvailable = 'SELECT is_available from equipment WHERE equip_id = $1'
+  const checkEquipAvailableVals = [id]
 
-  pool.query(resQuery, resValues)
-    .then (res => {
-      console.log(res.rows)
-      pool.query(equipQuery, equipValues)
-      .then (res2 => {
-        console.log(res2.rows)
-        })
-        .catch(e => console.error(e.stack))
+  const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
+  const reservationQueryVals = ['6', '1', 'Categ name', 'Categ description'];
+  const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
+  // Passes in the id via the request paramter so it knows which reservation to amend
+  const equipmentQueryVals = [false, id];
+
+  pool.query(checkEquipAvailable, checkEquipAvailableVals)
+      .then (res => {
+        if res.rows[0] = true {
+          pool.query(reservationQuery, reservationQueryVals)
+          console.log('1st promise')
+          .then (res2 => {
+            pool.query(equipmentQuery, equipmentQueryVals)
+            console.log('2nd promise')
+            })
+            .then (res3 => {
+              console.log(res3.rows)
+            })
+            .catch(e => console.error(e.stack))
+        }
+        else {
+          res.status(200).json('This equipment is already reserved!')
+        }
+
     })
-    // .then (res2 => {
-    //   console.log(res2.rows)
-    //   // pool.query(equipQuery, equipValues)
-    // })
-    // .then (res3 => {
-    //   console.log('Success!')
-    // })
-    //
+
+  // pool.query(reservationQuery, reservationQueryVals)
+  //   .then (res => {
+  //     console.log(res.rows)
+  //     pool.query(equipmentQuery, equipmentQueryVals)
+  //     .then (res2 => {
+  //       console.log(res2.rows)
+  //       })
+  //       .catch(e => console.error(e.stack))
+  //   })
 });
-      // res.status(200).json(results.rows);
-      // pool.query(resQuery, equipValues, (err, results) => {
-      //   if (err) {
-      //     console.log(err.stack)
-      //   } else {
-      //     console.log(results.rows[0]);
-      //     res.status(200).json(results.rows);
-      //   }
-      // })
-//   })
-// );
+
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
     // Queries the reservation via passed ID param above
     // pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
