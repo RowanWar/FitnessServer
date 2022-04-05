@@ -79,18 +79,30 @@ app.put('/api/updateReservation/:id', async (req, res) => {
   const id = req.params.id;
   // const updatedReservation = req.body;
 
-  query = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *'
-  values = ['6', '1', 'Categ name', 'Categ description']
-  pool.query(query, values, (err, results) => {
+  resQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
+  resValues = ['6', '1', 'Categ name', 'Categ description'];
+  equipQuery = 'UPDATE "equipment" SET "is_available" = $1 WHERE equip_id = $2';
+  // Passes in the id via the request paramter so it knows which reservation to amend
+  equipValues = ['false', id];
+
+  pool.query(resQuery, resValues, (err, results) => {
     if (err) {
       console.log(err.stack)
-    }
-    else {
-      console.log(results.rows[0]);
-      res.status(200).json(results.rows);
+    } else {
+      pool.query(resQuery, equipValues, (err, results) => {
+        if (err) {
+          console.log(err.stack)
+        }
+        else {
+        // add new query here into equipment to update is_available seperately
+
+          console.log(results.rows[0]);
+          res.status(200).json(results.rows);
+        }
+      })
     }
   })
-
+});
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
     // Queries the reservation via passed ID param above
     // pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
@@ -115,8 +127,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
     //     res.status(200).json(results.rows);
     //   }
     // })
-  }
-);
+
 
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
