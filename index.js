@@ -81,7 +81,7 @@ app.put('/api/updateReservation/:id', async (req, res) => {
 
   const resQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
   const resValues = ['6', '1', 'Categ name', 'Categ description'];
-  const equipQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2';
+  const equipQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
   // Passes in the id via the request paramter so it knows which reservation to amend
   const equipValues = [false, id];
 
@@ -91,8 +91,10 @@ app.put('/api/updateReservation/:id', async (req, res) => {
     })
     .then (res2 => {
       pool.query(equipQuery, equipValues)
+      console.log(res2.rows)
     })
     .then (res3 => {
+      console.log(res3.rows)
       console.log('Success!')
     })
     .catch(e => console.error(e.stack))
