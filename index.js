@@ -89,14 +89,15 @@ app.put('/api/updateReservation/:id', async (req, res) => {
     if (err) {
       console.log(err.stack)
     } else {
-      pool.query(resQuery, equipValues, (err, results) => {
-        if (err) {
-          console.log(err.stack)
-        } else {
-          console.log(results.rows[0]);
-          res.status(200).json(results.rows);
-        }
-      })
+      res.status(200).json(results.rows);
+      // pool.query(resQuery, equipValues, (err, results) => {
+      //   if (err) {
+      //     console.log(err.stack)
+      //   } else {
+      //     console.log(results.rows[0]);
+      //     res.status(200).json(results.rows);
+      //   }
+      // })
     }
   })
 });
