@@ -91,7 +91,6 @@ app.put('/api/updateReservation/:id', async (req, res) => {
     })
     .then (res2 => {
       pool.query(equipQuery, equipValues)
-      console.log(res2.rows)
     })
     .then (res3 => {
       console.log(res3.rows)
