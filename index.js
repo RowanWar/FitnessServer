@@ -52,7 +52,7 @@ app.get('/api/getReservation/:id', async (req, res) => {
 
   try {
     // Queries the reservation via passed ID param above
-    pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
+    pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1', [id], (err, results) => {
 
       if (err) {
         // Returns detailed error to console only for securiy reasons.
