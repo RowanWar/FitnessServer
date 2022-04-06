@@ -101,11 +101,11 @@ app.put('/api/createReservation/:id', async (req, res) => {
         .then (res => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise' + res.rows)
-        }
         .then (res => {
           console.log('Success')
           // res.status(200).res('Succesfully reserved equipment!')
-        }))
+        })
+      })
         .catch(e => console.error(e.stack))
     });
 
