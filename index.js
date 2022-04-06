@@ -79,7 +79,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
   const id = req.params.id;
   // const updatedReservation = req.body;
 
-  const checkEquipAvailable = 'SELECT is_available from equipment WHERE equip_id = $1'
+  const checkEquipAvailable = 'SELECT * from equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [id]
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
