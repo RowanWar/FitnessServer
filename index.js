@@ -96,11 +96,11 @@ app.put('/api/createReservation/:id', async (req, res) => {
         //   return;
         // }
 
-        console.log('1st promise')
+        console.log('1st promise' + res.rows)
         pool.query(reservationQuery, reservationQueryVals)
         .then (res2 => {
           pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('2nd promise' + res2)
+          console.log('2nd promise' + res2.rows)
         })
         .catch(e => console.error(e.stack))
     });
