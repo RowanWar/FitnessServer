@@ -90,11 +90,11 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (res => {
-        // if (res.rows = !true) {
-        //   console.log('If statement ran');
-        //   res.status(200).json('This equipment is already reserved!');
-        //   return;
-        // }
+        if (res.rows = !true) {
+          console.log('If statement ran');
+          res.status(200).json('This equipment is already reserved!');
+          return;
+        }
 
         console.log('1st promise' + res.rows)
         pool.query(reservationQuery, reservationQueryVals)
@@ -104,7 +104,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         })
         .then (res => {
           console.log('Success')
-          res.status(200).res('Succesfully reserved equipment!')
+          // res.status(200).res('Succesfully reserved equipment!')
         })
         .catch(e => console.error(e.stack))
     });
