@@ -96,14 +96,11 @@ app.put('/api/createReservation/:id', async (req, res) => {
         //   return;
         // }
 
-        pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
+        pool.query(reservationQuery, reservationQueryVals)
         .then (res2 => {
-          pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('2nd promise')
-        })
-        .then (res3 => {
-          console.log('Final result: ' + res3.rows)
+          // pool.query(equipmentQuery, equipmentQueryVals)
+          console.log('2nd promise' + res2)
         })
         .catch(e => console.error(e.stack))
     });
@@ -121,16 +118,16 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
 
 // ---------------------------------------------------------------
-// pool.query(checkEquipAvailable, checkEquipAvailableVals)
-//     .then (res => {
-//       console.log(res);
-//       pool.query(equipmentQuery, equipmentQueryVals)
-//       .then (resp2 => {
-//         console.log('2nd promise')
-//         console.log(resp2)
-//       })
-//       .catch(e => console.error(e.stack))
-//     });
+pool.query(checkEquipAvailable, checkEquipAvailableVals)
+    .then (res => {
+      console.log(res);
+      pool.query(equipmentQuery, equipmentQueryVals)
+      .then (resp2 => {
+        console.log('2nd promise')
+        console.log(resp2)
+      })
+      .catch(e => console.error(e.stack))
+    });
 // --------------------------------------------------------------
 
 
