@@ -90,24 +90,23 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (res => {
-        console.log(res);
-        pool.query(equipmentQuery, equipmentQueryVals)
-        .then (resp2 => {
-          console.log('2nd promise')
-          console.log(resp2)
-        })
-        .catch(e => console.error(e.stack))
-      });
         // if (res.rows = !true) {
         //   console.log('If statement ran');
         //   res.status(200).json('This equipment is already reserved!');
         //   return;
         // }
-        // console.log('First query = ' + resp.rows);
-        // console.log(resp.fields[0]);
-        // // pool.query(reservationQuery, reservationQueryVals)
-        // console.log('1st promise')
-        // const respon = resp.fields;
+
+        pool.query(reservationQuery, reservationQueryVals)
+        console.log('1st promise')
+        .then (res2 => {
+          pool.query(equipmentQuery, equipmentQueryVals)
+          console.log('2nd promise')
+        })
+        .then (res3 => {
+          console.log('Final result: ' + res3.rows)
+        })
+        .catch(e => console.error(e.stack))
+    });
 
   // pool.query(reservationQuery, reservationQueryVals)
   //   .then (res => {
@@ -119,6 +118,22 @@ app.put('/api/createReservation/:id', async (req, res) => {
   //       .catch(e => console.error(e.stack))
   //   })
 });
+
+
+// ---------------------------------------------------------------
+// pool.query(checkEquipAvailable, checkEquipAvailableVals)
+//     .then (res => {
+//       console.log(res);
+//       pool.query(equipmentQuery, equipmentQueryVals)
+//       .then (resp2 => {
+//         console.log('2nd promise')
+//         console.log(resp2)
+//       })
+//       .catch(e => console.error(e.stack))
+//     });
+// --------------------------------------------------------------
+
+
 
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
     // Queries the reservation via passed ID param above
