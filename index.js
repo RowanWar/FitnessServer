@@ -91,7 +91,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (res => {
         console.log(res);
-        if (res.rows[0] = true) {
+        if (res.rows = true) {
           pool.query(reservationQuery, reservationQueryVals)
           console.log('1st promise')
           .then (res2 => {
