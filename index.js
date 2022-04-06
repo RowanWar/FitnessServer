@@ -98,7 +98,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         console.log('First query = ' + res.rows);
         pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
-        .then (res2 => {
+        .then (res => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise')
           .then (res3 => {
