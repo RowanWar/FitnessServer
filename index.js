@@ -90,20 +90,19 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (res => {
-        console.log(res);
-        // MIGHT BE BETTER TO SAY IF res.rows NOT EQUAL TO TRUE, PRINT ITS RESERVED THEN RETURN, ADD CODE TO A .THEN OTHERWISE
         if (res.rows = !true) {
+          console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
           return;
         }
-
+        console.log('Fist query = ' res);
         pool.query(reservationQuery, reservationQueryVals)
-        console.log('1st promise', res)
-        .then (res => {
+        console.log('1st promise')
+        .then (res2 => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise')
-          .then (res => {
-            console.log(res.rows)
+          .then (res3 => {
+            console.log(res3.rows)
           })
           .catch(e => console.error(e.stack))
           })
