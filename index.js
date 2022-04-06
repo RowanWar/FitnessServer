@@ -99,7 +99,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         console.log(resp.fields[0]);
         // pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
-        .then (res2 => {
+        .then (resp.fields => {
           // pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise')
         })
