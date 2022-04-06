@@ -95,7 +95,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
           res.status(200).json('This equipment is already reserved!');
           return;
         }
-        console.log('First query = ' + res.rows);
+        console.log('First query = ' + typeof(res.rows));
         pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
         .then (res2 => {
