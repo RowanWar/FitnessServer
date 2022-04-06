@@ -79,7 +79,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
   const id = req.params.id;
   // const updatedReservation = req.body;
 
-  const checkEquipAvailable = 'SELECT * from equipment WHERE equip_id = $1'
+  const checkEquipAvailable = 'SELECT is_available from equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [id]
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
@@ -98,15 +98,15 @@ app.put('/api/createReservation/:id', async (req, res) => {
         console.log('First query = ' + res.rows);
         // pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
+      });
         .then (res2 => {
           // pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise')
-          .then (res3 => {
+        })
+        .then (res3 => {
             console.log(res3.rows)
           })
-        })
           .catch(e => console.error(e.stack))
-    });
 
   // pool.query(reservationQuery, reservationQueryVals)
   //   .then (res => {
