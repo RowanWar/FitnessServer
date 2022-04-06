@@ -95,7 +95,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
           res.status(200).json('This equipment is already reserved!');
           return;
         }
-        console.log('Fist query = ' res);
+        console.log('Fist query = ' + res);
         pool.query(reservationQuery, reservationQueryVals)
         console.log('1st promise')
         .then (res2 => {
