@@ -89,26 +89,26 @@ app.put('/api/createReservation/:id', async (req, res) => {
   const equipmentQueryVals = [false, id];
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
-      .then (resp.rows => {
+      .then (resp => {
+        .then (resp2 => {
+          // pool.query(equipmentQuery, equipmentQueryVals)
+          console.log('2nd promise')
+        })
+        .then (resp3 => {
+          console.log(res3.rows)
+        })
+        .catch(e => console.error(e.stack))
+      });
         // if (res.rows = !true) {
         //   console.log('If statement ran');
         //   res.status(200).json('This equipment is already reserved!');
         //   return;
         // }
-        console.log('First query = ' + resp.rows);
-        console.log(resp.fields[0]);
-        // pool.query(reservationQuery, reservationQueryVals)
-        console.log('1st promise')
+        // console.log('First query = ' + resp.rows);
+        // console.log(resp.fields[0]);
+        // // pool.query(reservationQuery, reservationQueryVals)
+        // console.log('1st promise')
         // const respon = resp.fields;
-        .then (resp => {
-          // pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('2nd promise')
-        })
-        .then (resp => {
-          console.log(res3.rows)
-        })
-        .catch(e => console.error(e.stack))
-    });
 
   // pool.query(reservationQuery, reservationQueryVals)
   //   .then (res => {
