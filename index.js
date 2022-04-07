@@ -99,17 +99,14 @@ app.put('/api/createReservation/:id', async (req, res) => {
           console.log('length statement ran');
           res.status(200).json('ERROR: This equipment does not exist!');
           return;
-        }
-
-        // If
-        else {
+        } else {
           const test = response.rows[0];
           const equipmentIsAvailable = test["is_available"];
+
           if (equipmentIsAvailable == false) {
             console.log('Is available statement ran');
             res.status(200).json('This equipment is already reserved!');
             return;
-
 
           pool.query(reservationQuery, reservationQueryVals)
           }
