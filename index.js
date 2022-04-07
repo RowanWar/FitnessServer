@@ -102,7 +102,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise' + res.rows)
           console.log('2nd promise2' + res)
-          const a = json.stringify(res)
+          const a = JSON.stringify(res)
           console.log(a);
         })
         .catch(e => console.error(e.stack))
