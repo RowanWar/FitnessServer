@@ -102,6 +102,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('2nd promise' + res.rows)
           console.log('2nd promise2' + res)
+          console.log(json.stringify(res));
         })
         .then (res => {
           console.log('Success');
