@@ -90,14 +90,14 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-        console.log(JSON.stringify(response.rows[0]));
-        console.log(Object.values(response.rows[0]));
+        // console.log(JSON.stringify(response.rows[0]));
+        // console.log(Object.values(response.rows[0]));
 
         // Converts returned query data from checkEquipAvailable into a string for the comparison if statement below
         const equipmentIsAvailable = JSON.stringify(Object.values(response.rows[0]));
         console.log(typeof(equipmentIsAvailable));
-        console.log(equipmentIsAvailable);
-        
+        console.log(equipmentIsAvailable.pop);
+
         if (equipmentIsAvailable == false) {
           console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
