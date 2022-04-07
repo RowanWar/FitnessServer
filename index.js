@@ -91,8 +91,8 @@ app.put('/api/createReservation/:id', async (req, res) => {
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
 
-        const test = response.rows[0];
-        const equipmentIsAvailable = test["is_available"];
+        // const test = response.rows[0];
+        // const equipmentIsAvailable = test["is_available"];
         // console.log(typeof(equipmentIsAvailable));
 
         if (response.rows.length === 0) {
@@ -102,14 +102,18 @@ app.put('/api/createReservation/:id', async (req, res) => {
         }
 
         // If
-        else if (equipmentIsAvailable == false) {
-          console.log('Is available statement ran');
-          res.status(200).json('This equipment is already reserved!');
-          return;
+        else {
+          const test = response.rows[0];
+          const equipmentIsAvailable = test["is_available"];
+          if (equipmentIsAvailable == false) {
+            console.log('Is available statement ran');
+            res.status(200).json('This equipment is already reserved!');
+            return;
 
+
+          pool.query(reservationQuery, reservationQueryVals)
+          }
         }
-
-        pool.query(reservationQuery, reservationQueryVals)
         .then (response => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('Success')
