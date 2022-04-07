@@ -104,6 +104,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         })
         .then (res => {
           console.log('Success');
+          console.log(res);
           console.log(res.rows);
           // res.status(200).res('Succesfully reserved equipment!')
         })
