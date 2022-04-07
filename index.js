@@ -95,6 +95,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         console.log(typeof(response.rows))
 
         const equipmentIsAvailable = Object.values(response.rows[0]);
+        console.log(typeof(equipmentIsAvailable));
         if (equipmentIsAvailable == false) {
           console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
