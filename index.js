@@ -102,7 +102,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         .then (response => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('Success')
-          res.status(200).json('Created reservation for equipment $1');
+          res.status(200).json('Created reservation for equipment $1',[id]);
         })
         .catch(e => console.error(e.stack))
     });
