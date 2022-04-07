@@ -92,9 +92,8 @@ app.put('/api/createReservation/:id', async (req, res) => {
       .then (response => {
         console.log(JSON.stringify(response.rows[0]));
         console.log(Object.values(response.rows[0]));
-        console.log(typeof(response.rows))
 
-        const equipmentIsAvailable = Object.values(response.rows[0]);
+        const equipmentIsAvailable = JSON.stringify(Object.values(response.rows[0]));
         console.log(typeof(equipmentIsAvailable));
         if (equipmentIsAvailable == false) {
           console.log('If statement ran');
