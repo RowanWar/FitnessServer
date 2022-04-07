@@ -90,25 +90,12 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-
-
-        // const test = response.rows[0];
-        // const equipmentIsAvailable = test["is_available"];
-        // console.log(typeof(equipmentIsAvailable));
-
-        console.log(response.rows[0]["is_available"]);
-        if (response.rows.length === 0) {
-          console.log('length statement ran');
-          res.status(200).json('ERROR: This equipment does not exist!');
-          return;
-        }
-
-        // If
-        else if (response.rows[0]["is_available"] == false) {
-          console.log('Is available statement ran');
+        const getAvailableField = response.rows[0];
+        const equipmentIsAvailable = getAvailableField["is_available"];
+        if (equipmentIsAvailable == false) {
+          console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
           return;
-
         }
 
         pool.query(reservationQuery, reservationQueryVals)
