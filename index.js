@@ -92,8 +92,8 @@ app.put('/api/createReservation/:id', async (req, res) => {
       .then (response => {
 
 
-        const test = response.rows[0];
-        const equipmentIsAvailable = test["is_available"];
+        // const test = response.rows[0];
+        // const equipmentIsAvailable = test["is_available"];
         // console.log(typeof(equipmentIsAvailable));
 
         console.log(response.rows[0]["is_available"]);
