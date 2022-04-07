@@ -90,7 +90,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-        console.log(JSON.stringify(response));
+        console.log(JSON.stringify(response.rows));
         console.log(typeof(response.rows))
         if (response.rows === false) {
           console.log('If statement ran');
