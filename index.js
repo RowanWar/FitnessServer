@@ -90,7 +90,8 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-        if (response.rows == false) {
+        console.log(typeof(response))
+        if (response.rows === false) {
           console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
           return;
