@@ -103,7 +103,8 @@ app.put('/api/createReservation/:id', async (req, res) => {
           console.log('2nd promise' + res.rows)
         })
         .then (res => {
-          console.log('Success')
+          console.log('Success');
+          console.log(res.rows);
           // res.status(200).res('Succesfully reserved equipment!')
         })
         .catch(e => console.error(e.stack))
