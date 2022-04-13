@@ -6,6 +6,20 @@ app.get('/', async (req, res) => {
   res.send('STATUS 200')
 });
 
+
+app.get('/authenticateUser/:email', async (req, res) => {
+  const email = req.params.email
+
+  const authUser = 'SELECT * FROM user_table WHERE user_id = $1) VALUES($1) RETURNING *';
+  const userEmail = [email];
+  pool.query(authUser, userEmail)
+    .then (response => {
+      console.log(response);
+      res.status(200).json(response);
+    }
+})
+
+
 app.get('/api/getEquipment', async (req, res) => {
   pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;', (err, results) => {
     if (err) {
@@ -20,8 +34,9 @@ app.get('/api/getEquipment', async (req, res) => {
   })
 });
 
+// Redundant besides testing
 app.get('/api/getUser', async (req, res) => {
-  pool.query('SELECT * FROM user', (err, results) => {
+  pool.query('SELECT * FROM user_table', (err, results) => {
     if (err) {
       // Returns detailed error to console only for securiy reasons.
       console.log('Error encountered: ' + err);
@@ -93,7 +108,6 @@ app.put('/api/createReservation/:id', async (req, res) => {
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
         if (equipmentIsAvailable == false) {
-          console.log('If statement ran');
           res.status(200).json('This equipment is already reserved!');
           return;
         }
@@ -102,35 +116,12 @@ app.put('/api/createReservation/:id', async (req, res) => {
         .then (response => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('Created reservation for equipment ID: ' + id)
-          res.status(200).json('Successfully created reservation for this equipment');
+          res.status(200).json('Successfully created reservation for this equipment!');
         })
         .catch(e => console.error(e.stack))
     });
-
-  // pool.query(reservationQuery, reservationQueryVals)
-  //   .then (res => {
-  //     console.log(res.rows)
-  //     pool.query(equipmentQuery, equipmentQueryVals)
-  //     .then (res2 => {
-  //       console.log(res2.rows)
-  //       })
-  //       .catch(e => console.error(e.stack))
-  //   })
 });
 
-
-// ---------------------------------------------------------------
-// pool.query(checkEquipAvailable, checkEquipAvailableVals)
-//     .then (res => {
-//       console.log(res);
-//       pool.query(equipmentQuery, equipmentQueryVals)
-//       .then (resp2 => {
-//         console.log('2nd promise')
-//         console.log(resp2)
-//       })
-//       .catch(e => console.error(e.stack))
-//     });
-// // --------------------------------------------------------------
 
 
 
