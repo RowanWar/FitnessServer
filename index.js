@@ -8,7 +8,7 @@ app.get('/', async (req, res) => {
 
 
 app.get('/api/authenticateUser/:email', async (req, res) => {
-  const email = req.params.email;
+  const email = req.params.email.toLowerCase();
 
   pool.query('SELECT * FROM user_table WHERE email = $1', [email], (err, results) => {
     if (err) {
