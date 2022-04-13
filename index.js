@@ -16,7 +16,7 @@ app.get('/authenticateUser/:email', async (req, res) => {
       return (res.json('Error encountered!'));
     }
     res.status(200).json(results.rows);
-  }
+  })
   // const authUser = 'SELECT * FROM user_table WHERE user_id = $1) VALUES($1) RETURNING *';
   // const userEmail = [email];
   // pool.query(authUser, userEmail)
