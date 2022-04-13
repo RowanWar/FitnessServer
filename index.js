@@ -7,17 +7,24 @@ app.get('/', async (req, res) => {
 });
 
 
-app.get('/authenticateUser/:id', async (req, res) => {
-  const email = req.params.id;
+app.get('/authenticateUser/:email', async (req, res) => {
+  const email = req.params.email;
 
-  const authUser = 'SELECT * FROM user_table WHERE user_id = $1) VALUES($1) RETURNING *';
-  const userEmail = [email];
-  pool.query(authUser, userEmail)
-    .then (response => {
-      console.log(response);
-      res.status(200).json(response);
-    })
-    .catch(e => console.error(e.stack));
+  pool.query('SELECT * FROM user_table WHERE user_id = $1', [email], (err, results) => {
+    if (err) {
+      console.log(err);
+      return (res.json('Error encountered!'));
+    }
+    res.status(200).json(results.rows);
+  }
+  // const authUser = 'SELECT * FROM user_table WHERE user_id = $1) VALUES($1) RETURNING *';
+  // const userEmail = [email];
+  // pool.query(authUser, userEmail)
+  //   .then (response => {
+  //     console.log(response);
+  //     res.status(200).json(response);
+  //   })
+  //   .catch(e => console.error(e.stack));
 })
 
 
