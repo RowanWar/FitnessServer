@@ -15,11 +15,12 @@ app.get('/authenticateUser/:email', async (req, res) => {
       console.log(err);
       return (res.json('Error encountered!'));
     }
+    // If email doesn't exist, return json message
     else if (results.rows.length == 0) {
       //console.log('No user found with this email');
       return (res.json('No user found with email of: ' + email));
     }
-    res.status(200).json(results.rows);
+    res.status(200).json(results.rows.user_id);
   })
 })
 
