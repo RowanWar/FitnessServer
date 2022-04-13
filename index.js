@@ -18,7 +18,8 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
     // If email doesn't exist, return json message
     else if (results.rows.length == 0) {
       //console.log('No user found with this email');
-      return (res.json(404, {error: 'No user found with this email'}));
+      // return (res.json(404, {error: 'No user found with this email'}));
+      return (res.status(404).json('No user found with this email'));
     }
 
     const userData = results.rows[0]; // Assigns shorter identifier to first (and only) result from query
