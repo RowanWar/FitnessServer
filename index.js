@@ -20,7 +20,10 @@ app.get('/authenticateUser/:email', async (req, res) => {
       //console.log('No user found with this email');
       return (res.json('No user found with email of: ' + email));
     }
-    res.status(200).json(results.rows.user_id[0]);
+    // const getAvailableField = response.rows[0];
+    // const equipmentIsAvailable = getAvailableField["is_available"];
+    const userData = results.rows[0];
+    res.status(200).json(userData['user_id']);
   })
 })
 
