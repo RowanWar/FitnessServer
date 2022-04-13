@@ -7,8 +7,8 @@ app.get('/', async (req, res) => {
 });
 
 
-app.get('/authenticateUser/:email', async (req, res) => {
-  const email = req.params.email;
+app.get('/authenticateUser/:id', async (req, res) => {
+  const email = req.params.id;
 
   const authUser = 'SELECT * FROM user_table WHERE user_id = $1) VALUES($1) RETURNING *';
   const userEmail = [email];
