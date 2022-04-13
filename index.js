@@ -7,7 +7,7 @@ app.get('/', async (req, res) => {
 });
 
 
-app.get('/authenticateUser/:email', async (req, res) => {
+app.get('/api/authenticateUser/:email', async (req, res) => {
   const email = req.params.email;
 
   pool.query('SELECT * FROM user_table WHERE email = $1', [email], (err, results) => {
@@ -20,10 +20,9 @@ app.get('/authenticateUser/:email', async (req, res) => {
       //console.log('No user found with this email');
       return (res.json('No user found with email of: ' + email));
     }
-    // const getAvailableField = response.rows[0];
-    // const equipmentIsAvailable = getAvailableField["is_available"];
-    const userData = results.rows[0];
-    res.status(200).json(userData['user_id']);
+
+    const userData = results.rows[0]; // Assigns shorter identifier to first (and only) result from query
+    res.status(200).json(userData['user_id']); // Accesses the returned object and returns only the ID to the API response
   })
 })
 
