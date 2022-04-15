@@ -28,7 +28,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 })
 
 // add :/ IF currentUser (user_id) exists in reservation_table,
-app.get('/api/getEquipment:/userId', async (req, res) => {
+app.get('/api/getEquipment/:userId', async (req, res) => {
   const id = req.params.userId;
 
   const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
