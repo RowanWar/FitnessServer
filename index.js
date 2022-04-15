@@ -32,23 +32,22 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
   const id = req.params.userId;
 
   const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
-  // const getEquipmentQueryVals = [false, id];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   const checkReservationsOfUserQuery = 'SELECT * FROM reservation WHERE user_id = $1';
-  checkReservationsOfUserQueryVals = [id];
+  const checkReservationsOfUserQueryVals = [id];
 
   pool.query(getEquipmentQuery)
       .then (response => {
         console.log('First one ran ' + response.rows);
         pool.query(checkReservationsOfUser, reservationQueryVals)
         res.status(200).json(response.rows);
-      .then (nextResponse => {
-        if (nextResponse.length == 0) {
-          return res.status(200).json('No reservation for user: ' + id);
-        }
-        console.log('Test123')
-        res.status(200).json(nextResponse.rows);
-      })
+        .then (nextResponse => {
+          if (nextResponse.length == 0) {
+            return res.status(200).json('No reservation for user: ' + id);
+          }
+          console.log('Test123')
+          res.status(200).json(nextResponse.rows);
+        })
       });
       // .catch(e => console.error(e.stack))
 });
