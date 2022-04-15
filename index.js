@@ -48,7 +48,7 @@ app.get('/api/getEquipment:/userId', async (req, res) => {
         //   res.status(200).json(response);
         // })
       });
-    .catch(e => console.error(e.stack))
+      .catch(e => console.error(e.stack))
 });
 // BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
 // app.get('/api/getEquipment:/userId', async (req, res) => {
