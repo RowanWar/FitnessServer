@@ -44,7 +44,8 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
         pool.query(checkUserHasReservation, checkUserHasReservationVals)
         .then (nextResponse => {
           if (nextResponse.length == 0) {
-            return res.status(200).json('No reservation for user: ' + [id]);
+            res.status(200).json('No reservation for user: ' + id);
+            return
           }
           console.log('Test123')
           res.status(200).json(nextResponse.rows);
