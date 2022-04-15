@@ -27,8 +27,29 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
   })
 })
 
+// add :/ IF currentUser (user_id) exists in reservation_table,
+app.get('/api/getEquipment:/userId', async (req, res) => {
+  const id = req.params.userId;
 
-app.get('/api/getEquipment', async (req, res) => {
+  const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
+  // const getEquipmentQueryVals = [false, id];   // Passes in the id via the request paramter so it knows which reservation to amend
+
+  const checkReservationsOfUserQuery = 'SELECT * FROM reservation WHERE user_id = $1';
+  checkReservationsOfUserQueryVals = [id];
+
+  pool.query(getEquipmentQuery)
+      .then (response => {
+        pool.query(checkReservationsOfUser, reservationQueryVals);
+        console.log('First one ran ' + response);
+        .then (response => {
+          // if response.length
+          // pool.query(equipmentQuery, equipmentQueryVals)
+          console.log('this ran' + response);
+          res.status(200).json(response);
+        })
+        .catch(e => console.error(e.stack))
+    });
+
   pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;', (err, results) => {
     if (err) {
       res.json('Error encountered!');
@@ -41,6 +62,23 @@ app.get('/api/getEquipment', async (req, res) => {
     res.status(200).json(data)
   })
 });
+
+// BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
+// app.get('/api/getEquipment:/userId', async (req, res) => {
+//   const id = req.params.userId;
+//
+//   pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;', (err, results) => {
+//     if (err) {
+//       res.json('Error encountered!');
+//       console.log('Error encountered: ' + err); // Returns error to console only for securiy purposes
+//       return;
+//     }
+//
+//     let data = results.rows // Assignsn shorter identifier to results
+//     console.log(data);
+//     res.status(200).json(data)
+//   })
+// });
 
 // Redundant besides testing
 app.get('/api/getUser', async (req, res) => {
@@ -107,9 +145,9 @@ app.put('/api/createReservation/:id', async (req, res) => {
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
   const reservationQueryVals = ['6', '1', 'Categ name', 'Categ description'];
+
   const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
-  // Passes in the id via the request paramter so it knows which reservation to amend
-  const equipmentQueryVals = [false, id];
+  const equipmentQueryVals = [false, id];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
