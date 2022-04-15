@@ -39,7 +39,7 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
   pool.query(getEquipmentQuery)
       .then (response => {
         console.log('First one ran ' + response.rows);
-        pool.query(checkReservationsOfUser, reservationQueryVals)
+        pool.query(checkReservationsOfUser, checkReservationsOfUserQueryVals)
         // console.log(response.rows);
         // res.status(200).json(response.rows);
         .then (nextResponse => {
