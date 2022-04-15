@@ -41,7 +41,8 @@ app.get('/api/getEquipment:/userId', async (req, res) => {
       .then (response => {
         // pool.query(checkReservationsOfUser, reservationQueryVals)
         console.log('First one ran ' + response);
-        res.status(200).json(response);
+        console.log(response.rows);
+        res.status(200).json(response.rows);
         // .then (response => {
         //   // if response.length
         //   // pool.query(equipmentQuery, equipmentQueryVals)
