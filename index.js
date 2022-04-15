@@ -47,7 +47,7 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
             res.status(200).json('No reservation for user: ' + id);
             return
           }
-          res.status(200).json(response.rows, nextResponse.rows);
+          res.status(200).json(response.rows + nextResponse.rows);
         })
       });
       // .catch(e => console.error(e.stack))
