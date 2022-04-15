@@ -39,12 +39,12 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
   pool.query(getEquipmentQuery)
       .then (response => {
         console.log('First one ran ' + response.rows);
-        pool.query(checkUserHasReservation, checkUserHasReservationVals)
-        console.log(response.rows);
+        // console.log(response.rows);
         // res.status(200).json(response.rows);
+        pool.query(checkUserHasReservation, checkUserHasReservationVals)
         .then (nextResponse => {
           if (nextResponse.length == 0) {
-            return res.status(200).json('No reservation for user: ' + id);
+            return res.status(200).json('No reservation for user: ' + [id]);
           }
           console.log('Test123')
           res.status(200).json(nextResponse.rows);
