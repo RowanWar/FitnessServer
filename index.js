@@ -41,27 +41,14 @@ app.get('/api/getEquipment:/userId', async (req, res) => {
       .then (response => {
         pool.query(checkReservationsOfUser, reservationQueryVals);
         console.log('First one ran ' + response);
-        .then (response => {
-          // if response.length
-          // pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('this ran' + response);
-          res.status(200).json(response);
-        })
+        // .then (response => {
+        //   // if response.length
+        //   // pool.query(equipmentQuery, equipmentQueryVals)
+        //   console.log('this ran' + response);
+        //   res.status(200).json(response);
+        // })
         .catch(e => console.error(e.stack))
     });
-
-  pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;', (err, results) => {
-    if (err) {
-      res.json('Error encountered!');
-      console.log('Error encountered: ' + err); // Returns error to console only for securiy purposes
-      return;
-    }
-
-    let data = results.rows // Assignsn shorter identifier to results
-    console.log(data);
-    res.status(200).json(data)
-  })
-});
 
 // BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
 // app.get('/api/getEquipment:/userId', async (req, res) => {
@@ -153,6 +140,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
       .then (response => {
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
+
         if (equipmentIsAvailable == false) {
           res.status(200).json('This equipment is already reserved!');
           return;
