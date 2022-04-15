@@ -43,7 +43,7 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
         console.log(response.rows);
         // res.status(200).json(response.rows);
         .then (nextResponse => {
-          if (response.length == 0) {
+          if (nextResponse.length == 0) {
             return res.status(200).json('No reservation for user: ' + id);
           }
           console.log('Test123')
