@@ -39,7 +39,7 @@ app.get('/api/getEquipment:/userId', async (req, res) => {
 
   pool.query(getEquipmentQuery)
       .then (response => {
-        pool.query(checkReservationsOfUser, reservationQueryVals);
+        pool.query(checkReservationsOfUser, reservationQueryVals)
         console.log('First one ran ' + response);
         // .then (response => {
         //   // if response.length
@@ -49,7 +49,7 @@ app.get('/api/getEquipment:/userId', async (req, res) => {
         // })
         .catch(e => console.error(e.stack))
     });
-
+});
 // BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
 // app.get('/api/getEquipment:/userId', async (req, res) => {
 //   const id = req.params.userId;
