@@ -34,16 +34,16 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
   const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
 
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
-  const checkUserHasReservationVals = id;
+  const checkUserHasReservationVals = [id];
 
   pool.query(getEquipmentQuery)
       .then (response => {
         console.log('First one ran ' + response.rows);
         pool.query(checkUserHasReservation, checkUserHasReservationVals)
-        // console.log(response.rows);
+        console.log(response.rows);
         // res.status(200).json(response.rows);
         .then (nextResponse => {
-          if (nextResponse.length == 0) {
+          if (response.length == 0) {
             return res.status(200).json('No reservation for user: ' + id);
           }
           console.log('Test123')
