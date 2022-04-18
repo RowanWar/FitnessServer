@@ -47,9 +47,9 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
             res.status(200).json('No reservation for user: ' + id);
             return
           }
-          const dataOne = response.rows;
-          const dataTwo = nextResponse.rows;
-          res.status(200).json({dataOne, dataTwo});
+          const equipment = response.rows;
+          const reservedEquipment = nextResponse.rows;
+          res.status(200).json({equipment, reservedEquipment});
         })
       });
       // .catch(e => console.error(e.stack))
