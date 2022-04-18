@@ -48,7 +48,7 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
             return
           }
           console.log(response.rows);
-          res.status(200).json(response.rows);
+          res.status(200).json({response.rows, nextResponse.rows});
         })
       });
       // .catch(e => console.error(e.stack))
