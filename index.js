@@ -44,12 +44,13 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
           const equipment = response.rows;
           const reservedEquipment = nextResponse.rows;
 
-          if (nextResponse.rows.length === 0) {
-            res.status(200).json({equipment});
+          if (nextResponse.rows.length != 0) {
+            res.status(200).json({equipment, reservedEquipment}); // return both responses if next response isn't empty
+
             // return res.status(403).json('No reservation for user: ' + id);
           }
 
-          res.status(200).json({equipment, reservedEquipment});
+          res.status(200).json({equipment});
         })
       });
       // .catch(e => console.error(e.stack))
