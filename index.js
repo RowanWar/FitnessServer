@@ -166,10 +166,10 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
   console.log(reservationId);
 
   const confirmUserIdMatches = 'SELECT user_id FROM reservation WHERE user_id = $1' // Checks the delete request was sent with the correct userId matching the reservationId
-  const confirmUserIdMatchesVals = userId
+  const confirmUserIdMatchesVals = [userId]
 
   const deleteUsersReservation = 'DELETE FROM reservation WHERE reservation_id = $1 RETURNING *';
-  const deleteUsersReservationVals = reservationId;   // Passes in the id via the request paramter so it knows which reservation to amend
+  const deleteUsersReservationVals = [reservationId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
