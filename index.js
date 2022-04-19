@@ -39,17 +39,18 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
   pool.query(getEquipmentQuery)
       .then (response => {
         console.log('First one ran ' + response.rows);
-        // console.log(response.rows);
-        // res.status(200).json(response.rows);
         pool.query(checkUserHasReservation, checkUserHasReservationVals)
         .then (nextResponse => {
-          if (nextResponse.rows.length == 0) {
-            res.status(200).json('No reservation for user: ' + id);
-            return
-          }
           const equipment = response.rows;
           const reservedEquipment = nextResponse.rows;
           res.status(200).json({equipment, reservedEquipment});
+
+          if (nextResponse.rows.length === 0) {
+            return res.status(403).json('No reservation for user: ' + id);
+          }
+          // const equipment = response.rows;
+          // const reservedEquipment = nextResponse.rows;
+          // res.status(200).json({equipment, reservedEquipment});
         })
       });
       // .catch(e => console.error(e.stack))
