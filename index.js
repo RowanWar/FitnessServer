@@ -160,7 +160,33 @@ app.put('/api/createReservation/:id', async (req, res) => {
     });
 });
 
+app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pass two paramters to the HTTP del request
+  const reservationId = req.params.resId;
+  const userId = req.params.userId;
 
+  const confirmUserIdMatches = 'SELECT user_id FROM reservation WHERE user_id = $1' // Checks the delete request was sent with the correct userId matching the reservationId
+  const confirmUserIdMatchesVals = [userId]
+
+  const deleteUsersReservation = 'DELETE FROM reservation WHERE reservation_id = $1 RETURNING *';
+  const deleteUsersReservationVals = [reservationId];   // Passes in the id via the request paramter so it knows which reservation to amend
+
+  pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
+      .then (response => {
+        const getUserField = response.rows[0]; // Grabs the entire response
+        const dbReservationsUserId = getUserField["user_id"]; // Grabs the userId from the returned database query
+
+        if (dbReservationsUserId != userId) {
+          return res.status(200).json('No reservation available to cancel!');
+        }
+
+        pool.query(deleteUsersReservation, deleteUsersReservationVals)
+        .then (secondResponse => {
+          console.log('Deleted reservation with ID: ' + reservationId)
+          res.status(200).json('Successfully deleted reservation with ID of: ' + reservartionId);
+        })
+        .catch(e => console.error(e.stack))
+    });
+});
 
 
     //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
