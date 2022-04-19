@@ -173,7 +173,7 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
 
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
-        if (response.rows.length === 0) {
+        if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
           return res.status(200).json('Error: No reservation found with ID: ' + reservationId);
         }
 
@@ -183,12 +183,13 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
         console.log(dbReservationsUserId);
 
 
-        if (dbReservationsUserId != userId) {
+        if (dbReservationsUserId != userId) { // Handles if the provided reservationId and userId don't match the reservation_id and user_id in psql db
           return res.status(200).json('This equipment is unavailable or is not reserved by you!');
         }
 
         pool.query(deleteUsersReservation, deleteUsersReservationVals)
           .then (secondResponse => {
+            console.log(secondResponse);
             console.log('Deleted reservation with ID: ' + reservationId);
             res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
           })
