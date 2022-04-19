@@ -173,6 +173,7 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
 
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
+        console.log(response);
         if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
           return res.status(403).json('Error: No reservation found with ID: ' + reservationId);
         }
