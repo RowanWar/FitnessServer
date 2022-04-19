@@ -131,7 +131,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
   const id = req.params.id;
   // const updatedReservation = req.body;
 
-  const checkEquipAvailable = 'SELECT is_available from equipment WHERE equip_id = $1'
+  const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [id]
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
@@ -172,18 +172,25 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
 
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
+        if (response.rows.length === 0) {
+          return res.status(200).json('Error: No reservation found with ID: ' + reservationId);
+        }
+
         const getUserField = response.rows[0]; // Grabs the entire response
+        console.log(getUserField);
         const dbReservationsUserId = getUserField["user_id"]; // Grabs the userId from the returned database query
+        console.log(dbReservationsUserId);
+
 
         if (dbReservationsUserId != userId) {
-          return res.status(200).json('No reservation available to cancel!');
+          return res.status(200).json('This equipment is unavailable or is not reserved by you!');
         }
 
         pool.query(deleteUsersReservation, deleteUsersReservationVals)
-        .then (secondResponse => {
-          console.log('Deleted reservation with ID: ' + reservationId);
-          res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
-        })
+          .then (secondResponse => {
+            console.log('Deleted reservation with ID: ' + reservationId);
+            res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
+          })
         .catch(e => console.error(e.stack))
     });
 });
