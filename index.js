@@ -181,8 +181,8 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
 
         pool.query(deleteUsersReservation, deleteUsersReservationVals)
         .then (secondResponse => {
-          console.log('Deleted reservation with ID: ' + reservationId)
-          res.status(200).json('Successfully deleted reservation with ID of: ' + reservartionId);
+          console.log('Deleted reservation with ID: ' + reservationId);
+          res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
         })
         .catch(e => console.error(e.stack))
     });
