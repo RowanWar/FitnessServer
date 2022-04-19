@@ -165,13 +165,13 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
   const userId = req.params.userId;
   console.log(reservationId);
 
-  const confirmUserIdMatches = 'SELECT user_id FROM reservation WHERE user_id = $1' // Checks the delete request was sent with the correct userId matching the reservationId
+  const confirmUserIdMatches = 'SELECT user_id FROM reservation WHERE user_id = 2' // Checks the delete request was sent with the correct userId matching the reservationId
   const confirmUserIdMatchesVals = [userId]
 
-  const deleteUsersReservation = 'DELETE * FROM reservation WHERE reservation_id = $1 RETURNING *';
+  const deleteUsersReservation = 'DELETE FROM reservation WHERE reservation_id = 103 RETURNING *';
   const deleteUsersReservationVals = [reservationId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
-  pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
+  pool.query(confirmUserIdMatches)
       .then (response => {
         if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
           return res.status(200).json('Error: No reservation found with ID: ' + reservationId);
@@ -184,7 +184,7 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
         if (dbReservationsUserId != userId) { // Handles if the provided reservationId and userId don't match the reservation_id and user_id in psql db
           return res.status(200).json('This equipment is unavailable or is not reserved by you!');
         }
-        pool.query(deleteUsersReservation, deleteUsersReservationVals)
+        pool.query(deleteUsersReservation)
           .then (secondResponse => {
             console.log('This runs');
             console.log('Deleted reservation with ID: ' + reservationId);
