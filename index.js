@@ -128,18 +128,20 @@ app.get('/api/getReservation/:id', async (req, res) => {
   }
 });
 
-app.put('/api/createReservation/:id', async (req, res) => {
-  const id = req.params.id;
-  // const updatedReservation = req.body;
+// UPDATE THIS TO CHECK IF USER CURRENTLY HAS RESERVATION, IF SO, DECLINE,
+// ADDITIONALLY, ALLOW PASSING AN ADDITIONAL ID OF USER_ID AND RESERVE FOR THAT SPECIFIC USER
+app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
+  const equipId = req.params.equipId;
+  const userId = req.params.userId;
 
   const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
-  const checkEquipAvailableVals = [id]
+  const checkEquipAvailableVals = [equipId]
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
-  const reservationQueryVals = ['6', '1', 'Categ name', 'Categ description'];
+  const reservationQueryVals = ['6', '1', 'Categ name', 'Categ description']; // UPDATE THIS
 
   const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
-  const equipmentQueryVals = [false, id];   // Passes in the id via the request paramter so it knows which reservation to amend
+  const equipmentQueryVals = [false, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
@@ -154,7 +156,7 @@ app.put('/api/createReservation/:id', async (req, res) => {
         pool.query(reservationQuery, reservationQueryVals)
         .then (response => {
           pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('Created reservation for equipment ID: ' + id)
+          console.log('Created reservation for equipment ID: ' + equipId)
           res.status(200).json('Successfully created reservation for this equipment!');
         })
         .catch(e => console.error(e.stack))
