@@ -138,7 +138,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const checkEquipAvailableVals = [equipId]
 
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
-  const reservationQueryVals = ['6', '1', 'Categ name', 'Categ description']; // UPDATE THIS
+  const reservationQueryVals = [equipId, userId, 'Categ name', 'Categ description']; // UPDATE THIS
 
   const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
   const equipmentQueryVals = [false, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
@@ -149,7 +149,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         const equipmentIsAvailable = getAvailableField["is_available"];
 
         if (equipmentIsAvailable == false) {
-          res.status(200).json('This equipment is already reserved!');
+          res.status(204).json('This equipment is already reserved!');
           return;
         }
 
@@ -157,7 +157,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         .then (response => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('Created reservation for equipment ID: ' + equipId)
-          res.status(200).json('Successfully created reservation for this equipment!');
+          res.status(201).json('Successfully created reservation for this equipment!');
         })
         .catch(e => console.error(e.stack))
     });
