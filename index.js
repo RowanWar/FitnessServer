@@ -29,12 +29,12 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 
 // add :/ IF currentUser (user_id) exists in reservation_table,
 app.get('/api/getEquipment/:userId', async (req, res) => {
-  const id = req.params.userId;
+  const userId = req.params.userId;
 
   const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
 
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
-  const checkUserHasReservationVals = [id];
+  const checkUserHasReservationVals = [userId];
 
   pool.query(getEquipmentQuery)
       .then (response => {
@@ -45,12 +45,12 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
           const reservedEquipment = nextResponse.rows;
 
           if (nextResponse.rows.length != 0) {
-            res.status(200).json({equipment, reservedEquipment}); // return both responses if next response isn't empty
+            return res.status(200).json({equipment, reservedEquipment}); // return both responses if next response isn't empty
 
             // return res.status(403).json('No reservation for user: ' + id);
           }
 
-          res.status(200).json({equipment});
+          return res.status(200).json({equipment});
         })
       });
       // .catch(e => console.error(e.stack))
