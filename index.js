@@ -50,7 +50,7 @@ app.get('/api/getEquipment/:userId', async (req, res) => {
             // return res.status(403).json('No reservation for user: ' + id);
           }
 
-          return res.status(200).json({equipment});
+          res.status(200).json({equipment});
         })
       });
       // .catch(e => console.error(e.stack))
