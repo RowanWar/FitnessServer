@@ -133,6 +133,7 @@ app.get('/api/getReservation/:id', async (req, res) => {
 app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const equipId = req.params.equipId;
   const userId = req.params.userId;
+  console.log(equipId + userId);
 
   const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
