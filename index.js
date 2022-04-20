@@ -137,10 +137,10 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
 
-  const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4) RETURNING *';
+  const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4)';
   const reservationQueryVals = [equipId, userId, 'Categ name', 'Categ description']; // UPDATE THIS
 
-  const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2 RETURNING *';
+  const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2';
   const equipmentQueryVals = [false, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
