@@ -26,7 +26,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 })
 
 
-
+// Checks if user has a valid reservation in DB for home screen
 app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   const userId = req.params.userId;
 
@@ -45,11 +45,10 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
         const reservedEquipment = response.rows;
         res.status(200).json({reservedEquipment});
       });
-      .catch(e => console.error(e.stack))
+      // .catch(e => console.error(e.stack))
 });
 
 
-// BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
 app.get('/api/getEquipment', async (req, res) => {
   pool.query('SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;', (err, results) => {
     if (err) {
@@ -63,7 +62,6 @@ app.get('/api/getEquipment', async (req, res) => {
     res.status(200).json(data)
   })
 });
-
 
 
 // Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
