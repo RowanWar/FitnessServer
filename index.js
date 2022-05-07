@@ -27,33 +27,26 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 
 
 
-// app.get('/api/getEquipment/:userId', async (req, res) => {
-//   const userId = req.params.userId;
-//
-//   const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
-//
-//   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
-//   const checkUserHasReservationVals = [userId];
-//
-//   pool.query(getEquipmentQuery)
-//       .then (response => {
-//         console.log('First one ran ' + response.rows);
-//         pool.query(checkUserHasReservation, checkUserHasReservationVals)
-//         .then (nextResponse => {
-//           const equipment = response.rows;
-//           const reservedEquipment = nextResponse.rows;
-//
-//           if (nextResponse.rows.length != 0) {
-//             return res.status(200).json({equipment, reservedEquipment}); // return both responses if next response isn't empty
-//
-//             // return res.status(403).json('No reservation for user: ' + id);
-//           }
-//
-//           res.status(200).json({equipment});
-//         })
-//       });
-//       // .catch(e => console.error(e.stack))
-// });
+app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
+
+  const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
+  const checkUserHasReservationVals = [userId];
+
+  pool.query(checkUserHasReservation, checkUserHasReservationVals)
+      .then (response => {
+        if (response.rows.length === 0) {
+          console.log('No equipment reserved by this user')
+          res.status(200).json('No equipment reservations with userId of: ' + userId)
+        }
+
+        const reservedEquipment = response.rows;
+        res.status(200).json({reservedEquipment});
+      });
+      .catch(e => console.error(e.stack))
+});
 
 
 // BACKUP OF OLD SOLUTION, CHANGING TO PROMISE. DELETE AFTER!!!!
@@ -71,32 +64,7 @@ app.get('/api/getEquipment', async (req, res) => {
   })
 });
 
-// Redundant besides testing
-app.get('/api/getUser', async (req, res) => {
-  pool.query('SELECT * FROM user_table', (err, results) => {
-    if (err) {
-      // Returns detailed error to console only for securiy reasons.
-      console.log('Error encountered: ' + err);
-      return (res.json('Error encountered!'));
-    }
 
-    let data = results.rows // Assignsn shorter identifier to results
-    console.log(data);
-    res.status(200).json(data)
-  })
-});
-
-app.get('/api/getAllReservations', async (req, res) => {
-  pool.query('SELECT * FROM reservation', (err, results) => {
-    if (err) {
-      // Returns detailed error to console only for securiy reasons.
-      console.log('Error encountered: ' + err);
-      return (res.json('Error encountered!'));
-    }
-
-    res.status(200).json(results.rows);
-  })
-});
 
 // Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
 app.get('/api/getReservation/:id', async (req, res) => {
@@ -222,6 +190,32 @@ app.delete('/api/deleteReservation/:resId/:userId', async (req, res) => { // pas
     //   }
     // })
 
+    // Redundant besides testing
+    // app.get('/api/getUser', async (req, res) => {
+    //   pool.query('SELECT * FROM user_table', (err, results) => {
+    //     if (err) {
+    //       // Returns detailed error to console only for securiy reasons.
+    //       console.log('Error encountered: ' + err);
+    //       return (res.json('Error encountered!'));
+    //     }
+    //
+    //     let data = results.rows // Assignsn shorter identifier to results
+    //     console.log(data);
+    //     res.status(200).json(data)
+    //   })
+    // });
+    // Redundant besides testing
+    // app.get('/api/getAllReservations', async (req, res) => {
+    //   pool.query('SELECT * FROM reservation', (err, results) => {
+    //     if (err) {
+    //       // Returns detailed error to console only for securiy reasons.
+    //       console.log('Error encountered: ' + err);
+    //       return (res.json('Error encountered!'));
+    //     }
+    //
+    //     res.status(200).json(results.rows);
+    //   })
+    // });
 
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
