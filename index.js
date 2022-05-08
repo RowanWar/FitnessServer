@@ -120,6 +120,9 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
 
+  const checkIfUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1'
+  const checkIfUserHasReservationVals = [userId]
+
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4)';
   const reservationQueryVals = [equipId, userId, 'Categ name', 'Categ description']; // UPDATE THIS
 
@@ -128,7 +131,10 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-
+        pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
+          .then (otherResponse => {
+            console.log('Text here');
+          })
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
 
@@ -137,15 +143,15 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
           return;
         }
 
+
         pool.query(reservationQuery, reservationQueryVals)
-          .then (nextResponse => {
+          .then (secondResponse => {
             pool.query(equipmentQuery, equipmentQueryVals)
             .then (thirdResponse => {
-              console.log('Starting automatic deletion timer...')
+              console.log('Starting reservation deletion timer...')
               setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
-                result = deleteReservationById(equipId);
-                console.log(result);
-                console.log('This is excuted...');
+                deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
+                console.log('Reservation for ' + equipId + ' has expired!');
               }, 15000)
             })
             console.log('Created reservation for equipment ID: ' + equipId)
