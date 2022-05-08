@@ -9,7 +9,7 @@ function deleteReservationById(equipId) {
     const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2';
     const equipmentQueryVals = [true, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
-    pool.query(deleteReservationQuery, queryValues, (err, results) => {
+    pool.query(deleteReservationQuery, queryValues
       .then (response => {
         pool.query(equipmentQuery, equipmentQueryVals, (err, results) => {
           console.log('Updated availablity to "True"');
@@ -21,7 +21,7 @@ function deleteReservationById(equipId) {
 
       console.log('Ran query')
       console.log(results);
-    })
+    )
 }
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
