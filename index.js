@@ -6,7 +6,7 @@ function deleteReservationById(equipId) {
     const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
     const queryValues = [equipId];
 
-    const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2';
+    const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2'; // Updates the auto deleted reservation to True so it can be reserved once again
     const equipmentQueryVals = [true, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
     pool.query(deleteReservationQuery, queryValues)
@@ -15,11 +15,9 @@ function deleteReservationById(equipId) {
           if (err) {
             return (console.log('Error encountered: ' + err)); // For security reasons, returns specific error to console-only
           }
-          console.log(results);
-          console.log('Updated availablity to "True"');
+          console.log('Updated equipment ' + equipId + ' with availablity "True"');
         })
       });
-      console.log('Ran query')
 }
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
@@ -148,7 +146,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
                 result = deleteReservationById(equipId);
                 console.log(result);
                 console.log('This is excuted...');
-              }, 10000)
+              }, 15000)
             })
             console.log('Created reservation for equipment ID: ' + equipId)
             res.status(201).json('Successfully created reservation for this equipment!');
