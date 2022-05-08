@@ -21,7 +21,6 @@ function deleteReservationById(equipId) {
 
       console.log('Ran query')
       console.log(results);
-    )
 }
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
