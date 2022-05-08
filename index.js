@@ -2,9 +2,9 @@ const express = require('express')
 const pool = require('./pool.js')
 const app = express()
 
-function deleteReservationById(equipId, userId) {
+function deleteReservationById(equipId) {
     const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
-    const queryValues = [equipId, userId];
+    const queryValues = [equipId];
 
     pool.query(deleteReservationQuery, queryValues, (err, results) => {
       if (err) {
@@ -140,8 +140,9 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
             .then (thirdResponse => {
               console.log('Starting automatic deletion timer...')
               setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
-                deleteReservationById(equipId, userId);
-                console.log('This is excuted...')
+                result = deleteReservationById(equipId);
+                console.log(result);
+                console.log('This is excuted...');
               }, 10000)
             })
             console.log('Created reservation for equipment ID: ' + equipId)
