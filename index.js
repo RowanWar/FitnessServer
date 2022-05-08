@@ -124,7 +124,11 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
           pool.query(equipmentQuery, equipmentQueryVals)
           console.log('Created reservation for equipment ID: ' + equipId)
           res.status(201).json('Successfully created reservation for this equipment!');
-          console.log('Successfully created res')
+          console.log('Successfully created reservation, starting automatic deletion timer...')
+
+          setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
+            console.log('This is excuted...')
+          }, 5000)
         })
         .catch(e => console.error(e.stack))
     });
