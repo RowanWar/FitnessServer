@@ -137,14 +137,14 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
           .then (secondResponse => {
             if (secondResponse.rows.length !== 0) {
-              return res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!');
+              return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!'));
             }
           })
 
-        if (equipmentIsAvailable == false) {
-          res.status(200).json('This equipment is already reserved!');
-          return;
-        }
+        // if (equipmentIsAvailable == false) {
+        //   res.status(200).json('This equipment is already reserved!');
+        //   return;
+        // }
 
 
         pool.query(reservationQuery, reservationQueryVals)
