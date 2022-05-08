@@ -2,6 +2,20 @@ const express = require('express')
 const pool = require('./pool.js')
 const app = express()
 
+function deleteReservationById(equipId, userId) {
+    const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
+    const queryValues = [equipId, userId];
+
+    pool.query(deleteReservationQuery, queryValues, (err, results) => {
+      if (err) {
+        console.log('Error encountered: ' + err); // For security reasons, returns specific error to console-only
+        return (res.json('Error encountered!'));
+      }
+
+      let data = results.rows // Assignsn shorter identifier to results
+      console.log(data);
+    })
+}
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
 });
@@ -12,7 +26,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 
   pool.query('SELECT * FROM user_table WHERE email = $1', [email], (err, results) => {
     if (err) {
-      console.log(err);
+      console.log('Error encountered: ' + err); // For security reasons, returns specific error to console-only
       return (res.json('Error encountered!'));
     }
     // If email doesn't exist, return json message
@@ -124,13 +138,14 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
           .then (nextResponse => {
             pool.query(equipmentQuery, equipmentQueryVals)
             .then (thirdResponse => {
+              console.log('Starting automatic deletion timer...')
               setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
+                deleteReservationById(equipId, userId);
                 console.log('This is excuted...')
-              }, 5000)
+              }, 10000)
             })
             console.log('Created reservation for equipment ID: ' + equipId)
             res.status(201).json('Successfully created reservation for this equipment!');
-            console.log('Successfully created reservation, starting automatic deletion timer...')
           })
         .catch(e => console.error(e.stack))
     });
