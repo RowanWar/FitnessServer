@@ -131,12 +131,15 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
-        pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
-          .then (otherResponse => {
-            console.log('Text here');
-          })
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
+
+        pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
+          .then (secondResponse => {
+            if (secondResponse.rows.length === 0) {
+              return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!')); 
+            }
+          })
 
         if (equipmentIsAvailable == false) {
           res.status(200).json('This equipment is already reserved!');
@@ -145,9 +148,9 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
 
 
         pool.query(reservationQuery, reservationQueryVals)
-          .then (secondResponse => {
+          .then (thirdResponse => {
             pool.query(equipmentQuery, equipmentQueryVals)
-            .then (thirdResponse => {
+            .then (fourthResponse => {
               console.log('Starting reservation deletion timer...')
               setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
                 deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
