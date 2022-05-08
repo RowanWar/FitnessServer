@@ -15,12 +15,11 @@ function deleteReservationById(equipId) {
           if (err) {
             return (console.log('Error encountered: ' + err)); // For security reasons, returns specific error to console-only
           }
+          console.log(results);
           console.log('Updated availablity to "True"');
         })
       });
-
       console.log('Ran query')
-      console.log(results);
 }
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
