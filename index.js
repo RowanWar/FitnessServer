@@ -111,6 +111,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
+
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
 
@@ -120,17 +121,17 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         }
 
         pool.query(reservationQuery, reservationQueryVals)
-        .then (nextResponse => {
-          pool.query(equipmentQuery, equipmentQueryVals)
-          console.log('Created reservation for equipment ID: ' + equipId)
-          res.status(201).json('Successfully created reservation for this equipment!');
-          console.log('Successfully created reservation, starting automatic deletion timer...')
-          .then (thirdResponse => {
-            setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
-              console.log('This is excuted...')
-            }, 5000)          
+          .then (nextResponse => {
+            pool.query(equipmentQuery, equipmentQueryVals)
+            .then (thirdResponse => {
+              setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
+                console.log('This is excuted...')
+              }, 5000)
+            })
+            console.log('Created reservation for equipment ID: ' + equipId)
+            res.status(201).json('Successfully created reservation for this equipment!');
+            console.log('Successfully created reservation, starting automatic deletion timer...')
           })
-        })
         .catch(e => console.error(e.stack))
     });
 });
