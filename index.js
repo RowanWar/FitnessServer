@@ -8,10 +8,9 @@ function deleteReservationById(equipId) {
 
     pool.query(deleteReservationQuery, queryValues, (err, results) => {
       if (err) {
-        console.log('Error encountered: ' + err); // For security reasons, returns specific error to console-only
-        return (res.json('Error encountered!'));
+        return (console.log('Error encountered: ' + err)); // For security reasons, returns specific error to console-only
       }
-
+      console.log('Ran query')
       let data = results.rows // Assignsn shorter identifier to results
       console.log(data);
     })
