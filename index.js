@@ -134,32 +134,31 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         const getAvailableField = response.rows[0];
         const equipmentIsAvailable = getAvailableField["is_available"];
 
+        if (equipmentIsAvailable == false) {
+          res.status(200).json('This equipment is already reserved!');
+          return;
+        }
+
         pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
           .then (secondResponse => {
             if (secondResponse.rows.length !== 0) {
               return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!'));
             }
-          })
 
-        // if (equipmentIsAvailable == false) {
-        //   res.status(200).json('This equipment is already reserved!');
-        //   return;
-        // }
-
-
-        pool.query(reservationQuery, reservationQueryVals)
-          .then (thirdResponse => {
-            pool.query(equipmentQuery, equipmentQueryVals)
-            .then (fourthResponse => {
-              console.log('Starting reservation deletion timer...')
-              setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
-                deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
-                console.log('Reservation for ' + equipId + ' has expired!');
-              }, 15000)
-            })
-            console.log('Created reservation for equipment ID: ' + equipId)
-            res.status(201).json('Successfully created reservation for this equipment!');
-          })
+            pool.query(reservationQuery, reservationQueryVals)
+              .then (thirdResponse => {
+                pool.query(equipmentQuery, equipmentQueryVals)
+                .then (fourthResponse => {
+                  console.log('Starting reservation deletion timer...')
+                  setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
+                    deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
+                    console.log('Reservation for ' + equipId + ' has expired!');
+                  }, 15000)
+                })
+                console.log('Created reservation for equipment ID: ' + equipId)
+                res.status(201).json('Successfully created reservation for this equipment!');
+              })
+        })
         .catch(e => console.error(e.stack))
     });
 });
