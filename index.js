@@ -115,7 +115,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         const equipmentIsAvailable = getAvailableField["is_available"];
 
         if (equipmentIsAvailable == false) {
-          res.status(204).json('This equipment is already reserved!');
+          res.status(200).json('This equipment is already reserved!');
           return;
         }
 
