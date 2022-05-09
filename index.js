@@ -151,7 +151,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
                   setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
                     deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
                     console.log('Reservation for ' + equipId + ' has expired!');
-                  }, 15000)
+                  }, 900000)
                 })
 
                 console.log('Created reservation for equipment ID: ' + equipId)
