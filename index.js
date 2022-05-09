@@ -56,7 +56,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
       .then (response => {
         if (response.rows.length === 0) {
           console.log('No equipment reserved by this user')
-          res.status(200).json('No equipment reservations with userId of: ' + userId)
+          return (res.status(200).json('No equipment reservations with userId of: ' + userId))
         }
 
         const reservedEquipment = response.rows;
@@ -110,8 +110,7 @@ app.get('/api/getReservation/:id', async (req, res) => {
   }
 });
 
-// UPDATE THIS TO CHECK IF USER CURRENTLY HAS RESERVATION, IF SO, DECLINE,
-// ADDITIONALLY, ALLOW PASSING AN ADDITIONAL ID OF USER_ID AND RESERVE FOR THAT SPECIFIC USER
+
 app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const equipId = req.params.equipId;
   const userId = req.params.userId;
@@ -135,13 +134,12 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         const equipmentIsAvailable = getAvailableField["is_available"];
 
         if (equipmentIsAvailable == false) {
-          res.status(200).json('This equipment is already reserved!');
-          return;
+          return (res.status(200).json('This equipment is already reserved!'));
         }
 
         pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
           .then (secondResponse => {
-            if (secondResponse.rows.length !== 0) {
+            if (secondResponse.rows.length !== 0) { // Returns > 1 if user already has a reservation, erroring out below
               return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!'));
             }
 
@@ -155,6 +153,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
                     console.log('Reservation for ' + equipId + ' has expired!');
                   }, 15000)
                 })
+
                 console.log('Created reservation for equipment ID: ' + equipId)
                 res.status(201).json('Successfully created reservation for this equipment!');
               })
