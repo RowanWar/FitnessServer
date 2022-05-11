@@ -166,6 +166,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
 app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) => { // pass two paramters to the HTTP del request
   const reservationId = req.params.resId;
   const userId = req.params.userId;
+  const equipId = req.params.equipId;
   console.log(reservationId);
 
   const confirmUserIdMatches = 'SELECT user_id FROM reservation WHERE user_id = $1' // Checks the delete request was sent with the correct userId matching the reservationId
