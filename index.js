@@ -192,7 +192,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
           // console.log('Deleted reservation with ID: ' + reservationId);
           // pool.query
           res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
-        .catch(e => console.error(e.stack))
+        // .catch(e => console.error(e.stack))
     });
 });
 
