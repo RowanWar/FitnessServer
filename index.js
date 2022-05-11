@@ -38,6 +38,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
     }
 
     const userData = results.rows[0]; // Assigns shorter identifier to first (and only) result from query
+    console.log('Successfully authenticated user: ' + email + ', ID: ' + userData['user_id']);
     res.status(200).json(userData['user_id']); // Accesses the returned object and returns only the ID to the API response
   })
 })
@@ -115,7 +116,6 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const equipId = req.params.equipId;
   const userId = req.params.userId;
   let reservationTimer = 20000; // The timer for which reserved equipment lasts
-  console.log(equipId + userId);
 
   const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
