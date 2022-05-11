@@ -189,8 +189,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
         }
         deleteReservationById(equipId);
         res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
-    });
-    .catch(e => console.error(e.stack));
+    }).catch(e => console.error(e.stack));
 });
 
 
