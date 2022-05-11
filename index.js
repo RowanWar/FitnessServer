@@ -56,7 +56,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
       .then (response => {
         if (response.rows.length === 0) {
           console.log('No equipment reserved by this user')
-          return (res.status(200).json('No equipment reservations with userId of: ' + userId))
+          return (res.status(200).json('No equipment reservations by userId: ' + userId))
         }
 
         const reservedEquipment = response.rows;
@@ -74,8 +74,8 @@ app.get('/api/getEquipment', async (req, res) => {
       return;
     }
 
+    console.log('Successfully loaded equipment...');
     let data = results.rows // Assignsn shorter identifier to results
-    console.log(data);
     res.status(200).json(data)
   })
 });
@@ -178,7 +178,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
         if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
-          return (res.status(403).json('Error: No reservation found with ID: ' + reservationId + userId));
+          return (res.status(403).json('Error: No reservation found with ID: ' + reservationId));
         }
 
         const getUserField = response.rows[0]; // Grabs the entire response
