@@ -55,7 +55,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   pool.query(checkUserHasReservation, checkUserHasReservationVals)
       .then (response => {
         if (response.rows.length === 0) {
-          console.log('No equipment reserved by this user [' + userId + ']')
+          console.log('No equipment reserved by user with ID: ' + userId);
           return (res.status(200).json('No equipment reservations by userId: ' + userId))
         }
 
@@ -148,10 +148,10 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
               .then (thirdResponse => {
                 pool.query(equipmentQuery, equipmentQueryVals)
                 .then (fourthResponse => {
-                  console.log('Starting reservation deletion timer for: ' + reservationTimer + ' seconds...')
+                  console.log('Starting reservation deletion timer for: ' + reservationTimer + 'ms...')
                   setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
                     deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
-                    console.log('Reservation for ' + equipId + ' has expired!');
+                    console.log('Reservation for equipment with ID: ' + equipId + ', has expired!');
                   }, reservationTimer)
                 })
 
@@ -178,7 +178,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
       .then (response => {
         if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
-          return (res.status(403).json('Error: No reservation found with ID: ' + reservationId));
+          return (res.status(403).json('Error: Reservation has already expired!'));
         }
 
         const getUserField = response.rows[0]; // Grabs the entire response
