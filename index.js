@@ -48,8 +48,6 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   const userId = req.params.userId;
 
-  const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = 6;';
-
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
   const checkUserHasReservationVals = [userId];
 
@@ -62,11 +60,14 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
 
         const result = response.rows[0];
         const equipId = result['equip_id'];
+
+        const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = 1$';
+        const getReservedEquipmentVals = [equipId];
         console.log(equipId);
-        // pool.query(getReservedEquipment, getReservedEquipmentVals)
-        //   .then (secondResponse => {
-        //     res.status(200).json('2nd Response: ' + secondResponse.rows)
-        //   })
+        pool.query(getReservedEquipment, getReservedEquipmentVals)
+          .then (secondResponse => {
+            res.status(200).json('2nd Response: ' + secondResponse.rows);
+          })
 
         // const reservedEquipment = response.rows;
         // res.status(200).json({reservedEquipment});
