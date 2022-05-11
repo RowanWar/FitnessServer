@@ -69,11 +69,11 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
           .then (secondResponse => {
             const reservation = response.rows;
             const reservation2 = secondResponse.rows;
-            // let reservation = reservation1.concat(reservation2);
+            let concatReservation = reservation1.concat(reservation2);
             // console.log(reservation2);
-            reservation.push(...reservation2);
-            console.log(reservation);
-            res.status(200).json({reservation});
+            // reservation.push(...reservation2);
+            console.log(concatReservation);
+            res.status(200).json({concatReservation});
           })
 
         // const reservedEquipment = response.rows;
