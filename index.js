@@ -189,11 +189,9 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
           return res.status(404).json('This equipment is unavailable or is not reserved by you!');
         }
         deleteReservationById(equipId)
-          .then (secondResponse => {
-            console.log('Deleted reservation with ID: ' + reservationId);
-            pool.query
-            res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
-          })
+          // console.log('Deleted reservation with ID: ' + reservationId);
+          // pool.query
+          res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
         .catch(e => console.error(e.stack))
     });
 });
