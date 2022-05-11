@@ -67,7 +67,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
 
         pool.query(getReservedEquipment, getReservedEquipmentVals)
           .then (secondResponse => {
-            const reservation = response.rows;
+            const reservation1 = response.rows;
             const reservation2 = secondResponse.rows;
             let concatReservation = reservation1.concat(reservation2);
             // console.log(reservation2);
