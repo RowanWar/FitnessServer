@@ -64,9 +64,12 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
         const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = $1';
         const getReservedEquipmentVals = [equipId];
         console.log(equipId);
+
         pool.query(getReservedEquipment, getReservedEquipmentVals)
           .then (secondResponse => {
-            res.status(200).json('2nd Response: ' + secondResponse.rows);
+            const reservation = response.rows;
+            const reservedEquipment = secondResponse.rows;
+            res.status(200).json({reservation, reservedEquipment});
           })
 
         // const reservedEquipment = response.rows;
