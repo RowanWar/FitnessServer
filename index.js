@@ -48,7 +48,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
 app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   const userId = req.params.userId;
 
-  const getEquipmentQuery = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, e.is_available ASC;';
+  const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = 6;';
 
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
   const checkUserHasReservationVals = [userId];
@@ -60,10 +60,17 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
           return (res.status(200).json('No equipment reservations by userId: ' + userId))
         }
 
-        const reservedEquipment = response.rows;
-        res.status(200).json({reservedEquipment});
-      });
-      // .catch(e => console.error(e.stack))
+        const result = response.rows[0];
+        const equipId = result['equip_id'];
+        console.log(equipId);
+        // pool.query(getReservedEquipment, getReservedEquipmentVals)
+        //   .then (secondResponse => {
+        //     res.status(200).json('2nd Response: ' + secondResponse.rows)
+        //   })
+
+        // const reservedEquipment = response.rows;
+        // res.status(200).json({reservedEquipment});
+      }).catch(e => console.error(e.stack))
 });
 
 
@@ -191,59 +198,6 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
         res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
     }).catch(e => console.error(e.stack));
 });
-
-
-    //SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id ORDER BY e.equip_type_id, equip_id ASC;
-    // Queries the reservation via passed ID param above
-    // pool.query('SELECT * FROM reservation r JOIN equipment e ON r.equip_id = e.equip_id WHERE reservation_id = $1 ORDER BY r.reserve_time DESC', [id], (err, results) => {
-    // pool.query(UPDATE "reservation")
-    // pool.query(INSERT INTO reservation()VALUES(), (err, results) => {
-    //
-    //   if (err) {
-    //     // Returns detailed error to console only for securiy reasons.
-    //     console.log('Error encountered: ' + err);
-    //     return (res.json('Error encountered!'));
-    //   }
-    //
-    //   else if (results.rows.length === 0) {
-    //     console.log('No reservation with this ID');
-    //     res.status(200).json('No reservation with this ID');
-    //   }
-    //
-    //   else {
-    //     // res.status(200).json(results.rows.reservation_id);
-    //     // res.status(200).json(results.rows);
-    //     // results.rows.is_available = updatedReservation;
-    //     res.status(200).json(results.rows);
-    //   }
-    // })
-
-    // Redundant besides testing
-    // app.get('/api/getUser', async (req, res) => {
-    //   pool.query('SELECT * FROM user_table', (err, results) => {
-    //     if (err) {
-    //       // Returns detailed error to console only for securiy reasons.
-    //       console.log('Error encountered: ' + err);
-    //       return (res.json('Error encountered!'));
-    //     }
-    //
-    //     let data = results.rows // Assignsn shorter identifier to results
-    //     console.log(data);
-    //     res.status(200).json(data)
-    //   })
-    // });
-    // Redundant besides testing
-    // app.get('/api/getAllReservations', async (req, res) => {
-    //   pool.query('SELECT * FROM reservation', (err, results) => {
-    //     if (err) {
-    //       // Returns detailed error to console only for securiy reasons.
-    //       console.log('Error encountered: ' + err);
-    //       return (res.json('Error encountered!'));
-    //     }
-    //
-    //     res.status(200).json(results.rows);
-    //   })
-    // });
 
 
 app.listen(8080, () => { console.log('Server established on port 8080')})
