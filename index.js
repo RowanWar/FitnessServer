@@ -6,7 +6,7 @@ function deleteReservationById(equipId) {
     const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
     const queryValues = [equipId];
 
-    const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2'; // Updates the auto deleted reservation to True so it can be reserved once again
+    const equipmentQuery = 'UPDATE equipment SET available = $1 WHERE equip_id = $2'; // Updates the auto deleted reservation to True so it can be reserved once again
     const equipmentQueryVals = [true, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
     pool.query(deleteReservationQuery, queryValues)
@@ -86,15 +86,13 @@ app.get('/api/getEquipment', async (req, res) => {
       return;
     }
 
-    console.log('Successfully loaded equipment...');
     let data = results.rows // Assignsn shorter identifier to results
     res.status(200).json(data)
   })
 });
 
 
-// Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
-app.get('/api/getReservation/:id', async (req, res) => {
+app.get('/api/getReservation/:id', async (req, res) => { // Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
   const id = req.params.id;
 
   try {
@@ -128,7 +126,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const userId = req.params.userId;
   let reservationTimer = 20000; // The timer for which reserved equipment lasts
 
-  const checkEquipAvailable = 'SELECT is_available FROM equipment WHERE equip_id = $1'
+  const checkEquipAvailable = 'SELECT available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
 
   const checkIfUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1'
@@ -137,13 +135,13 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const reservationQuery = 'INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES($1, $2, $3, $4)';
   const reservationQueryVals = [equipId, userId, 'Categ name', 'Categ description']; // UPDATE THIS
 
-  const equipmentQuery = 'UPDATE equipment SET is_available = $1 WHERE equip_id = $2';
+  const equipmentQuery = 'UPDATE equipment SET available = $1 WHERE equip_id = $2';
   const equipmentQueryVals = [false, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
       .then (response => {
         const getAvailableField = response.rows[0];
-        const equipmentIsAvailable = getAvailableField["is_available"];
+        const equipmentIsAvailable = getAvailableField["available"];
 
         if (equipmentIsAvailable == false) {
           return (res.status(200).json('This equipment is already reserved!'));
