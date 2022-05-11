@@ -38,7 +38,7 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
     }
 
     const userData = results.rows[0]; // Assigns shorter identifier to first (and only) result from query
-    console.log('Successfully authenticated user: ' + email + ', ID: ' + userData['user_id']);
+    console.log('\nSuccessfully authenticated user: ' + email + ', ID: ' + userData['user_id']);
     res.status(200).json(userData['user_id']); // Accesses the returned object and returns only the ID to the API response
   })
 })
