@@ -55,7 +55,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   pool.query(checkUserHasReservation, checkUserHasReservationVals)
       .then (response => {
         if (response.rows.length === 0) {
-          console.log('No equipment reserved by this user')
+          console.log('No equipment reserved by this user [' + userId + ']')
           return (res.status(200).json('No equipment reservations by userId: ' + userId))
         }
 
