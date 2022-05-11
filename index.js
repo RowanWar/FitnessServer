@@ -71,7 +71,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
             let reservation2 = secondResponse.rows;
             // let reservationInfo = reservation1.concat(reservation2);
             // console.log(reservation2);
-            reservationInfo.push(...reservation2);
+            reservationInfo.push(reservation2);
             console.log(reservationInfo);
             res.status(200).json({reservationInfo});
           })
