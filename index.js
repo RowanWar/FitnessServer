@@ -67,9 +67,11 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
 
         pool.query(getReservedEquipment, getReservedEquipmentVals)
           .then (secondResponse => {
-            const reservation = response.rows;
-            const reservedEquipment = secondResponse.rows;
-            res.status(200).json({reservation, reservedEquipment});
+            const reservation1 = response.rows;
+            const reservation2 = secondResponse.rows;
+            let reservation = reservation1.concat(reservation2);
+            console.log(reservation);
+            res.status(200).json({reservation});
           })
 
         // const reservedEquipment = response.rows;
@@ -161,7 +163,6 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
                   setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
                     deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
                     console.log('Reservation for equipment with ID: ' + equipId + ', has expired!');
-                    res.status(200).json(alert('Text'));
                   }, reservationTimer)
                 })
 
