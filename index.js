@@ -60,8 +60,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
       const equipId = result['equip_id']; // Extracts equip_id value and assigns it to equipId
 
 
-      const getReservedEquipment = 'SELECT * FROM equipment eq INNER JOIN equipment_type et ON eq.equip_type_id = et.equip_type_id\
-      INNER JOIN reservation res ON eq.equip_id=res.equip_id WHERE eq.equip_id = $1';
+      const getReservedEquipment = 'SELECT * FROM equipment eq INNER JOIN equipment_type et ON eq.equip_type_id = et.equip_type_id INNER JOIN reservation res ON eq.equip_id=res.equip_id WHERE eq.equip_id = $1';
       const getReservedEquipmentVals = [equipId]; // These paramterized queries are declared here as equipId is returned from first query response
       pool.query(getReservedEquipment, getReservedEquipmentVals)
         .then (secondResponse => {
