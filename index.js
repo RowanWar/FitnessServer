@@ -53,7 +53,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
     .then (response => {
       if (response.rows.length === 0) { // If user does not have an equipment reservation result = 0, in which case if statement runs and safely returns.
         console.log('No equipment reserved by user with ID: ' + userId);
-        return (res.status(404).json('No equipment reservations by userId: ' + userId))
+        return (res.status(200).json('No equipment reservations by userId: ' + userId))
       }
 
       const result = response.rows[0]; // Gets first element in response array and assigns it to var result
