@@ -68,7 +68,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
           // let reservationInfo = response.rows;
           let reservedEquipment = secondResponse.rows; // Assigns shorter identifer to returned data
 
-          res.status(200).json({reservedEquipment});
+          res.status(200).json(reservedEquipment);
         })
     }).catch(e => console.error(e.stack))
 });
@@ -139,13 +139,13 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
       const equipmentIsAvailable = getAvailableField["available"];
 
       if (equipmentIsAvailable == false) {
-        return (res.status(400).json('This equipment is already reserved!'));
+        return (res.status(200).json('This equipment is already reserved!'));
       }
 
       pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
         .then (secondResponse => {
           if (secondResponse.rows.length !== 0) { // Returns > 1 if user already has a reservation, erroring out below
-            return (res.status(400).json('Error: You already have a reservation. Only one reservation can exist per user!'));
+            return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!'));
           }
 
           pool.query(reservationQuery, reservationQueryVals)
