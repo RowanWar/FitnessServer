@@ -3,21 +3,21 @@ const pool = require('./pool.js')
 const app = express()
 
 function deleteReservationById(equipId) {
-    const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
-    const queryValues = [equipId];
+  const deleteReservationQuery = 'DELETE FROM reservation WHERE equip_id = $1 RETURNING *';
+  const queryValues = [equipId];
 
-    const equipmentQuery = 'UPDATE equipment SET available = $1 WHERE equip_id = $2'; // Updates the auto deleted reservation to True so it can be reserved once again
-    const equipmentQueryVals = [true, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
+  const equipmentQuery = 'UPDATE equipment SET available = $1 WHERE equip_id = $2'; // Updates the auto deleted reservation to True so it can be reserved once again
+  const equipmentQueryVals = [true, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
-    pool.query(deleteReservationQuery, queryValues)
-      .then (response => {
-        pool.query(equipmentQuery, equipmentQueryVals, (err, results) => {
-          if (err) {
-            return (console.log('Error encountered: ' + err)); // For security reasons, returns specific error to console-only
-          }
-          console.log('Updated equipment ' + equipId + ' with availablity "True"');
-        })
-      });
+  pool.query(deleteReservationQuery, queryValues)
+    .then (response => {
+      pool.query(equipmentQuery, equipmentQueryVals, (err, results) => {
+        if (err) {
+          return (console.log('Error encountered: ' + err)); // For security reasons, returns specific error to console-only
+        }
+        console.log('Updated equipment ' + equipId + ' with availablity "True"');
+      })
+    });
 }
 app.get('/', async (req, res) => {
   res.send('STATUS 200')
@@ -50,26 +50,27 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
   const checkUserHasReservationVals = [userId];
   pool.query(checkUserHasReservation, checkUserHasReservationVals)
-      .then (response => {
-        if (response.rows.length === 0) { // If user does not have an equipment reservation result = 0, in which case if statement runs and safely returns.
-          console.log('No equipment reserved by user with ID: ' + userId);
-          return (res.status(200).json('No equipment reservations by userId: ' + userId))
-        }
+    .then (response => {
+      if (response.rows.length === 0) { // If user does not have an equipment reservation result = 0, in which case if statement runs and safely returns.
+        console.log('No equipment reserved by user with ID: ' + userId);
+        return (res.status(200).json('No equipment reservations by userId: ' + userId))
+      }
 
-        const result = response.rows[0]; // Gets first element in response array and assigns it to var result
-        const equipId = result['equip_id']; // Extracts equip_id value and assigns it to equipId
+      const result = response.rows[0]; // Gets first element in response array and assigns it to var result
+      const equipId = result['equip_id']; // Extracts equip_id value and assigns it to equipId
 
 
-        const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = $1';
-        const getReservedEquipmentVals = [equipId];
-        pool.query(getReservedEquipment, getReservedEquipmentVals)
-          .then (secondResponse => {
-            let reservationInfo = response.rows;
-            let reservationEquipment = secondResponse.rows;
+      const getReservedEquipment = 'SELECT * FROM equipment eq INNER JOIN equipment_type et ON eq.equip_type_id = et.equip_type_id\
+      INNER JOIN reservation res ON eq.equip_id=res.equip_id WHERE eq.equip_id = $1';
+      const getReservedEquipmentVals = [equipId]; // These paramterized queries are declared here as equipId is returned from first query response
+      pool.query(getReservedEquipment, getReservedEquipmentVals)
+        .then (secondResponse => {
+          // let reservationInfo = response.rows;
+          let reservedEquipment = secondResponse.rows; // Assigns shorter identifer to returned data
 
-            res.status(200).json({reservationInfo, reservationEquipment});
-          })
-      }).catch(e => console.error(e.stack))
+          res.status(200).json(reservedEquipment);
+        })
+    }).catch(e => console.error(e.stack))
 });
 
 
@@ -133,37 +134,37 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const equipmentQueryVals = [false, equipId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(checkEquipAvailable, checkEquipAvailableVals)
-      .then (response => {
-        const getAvailableField = response.rows[0];
-        const equipmentIsAvailable = getAvailableField["available"];
+    .then (response => {
+      const getAvailableField = response.rows[0];
+      const equipmentIsAvailable = getAvailableField["available"];
 
-        if (equipmentIsAvailable == false) {
-          return (res.status(400).json('This equipment is already reserved!'));
-        }
+      if (equipmentIsAvailable == false) {
+        return (res.status(400).json('This equipment is already reserved!'));
+      }
 
-        pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
-          .then (secondResponse => {
-            if (secondResponse.rows.length !== 0) { // Returns > 1 if user already has a reservation, erroring out below
-              return (res.status(400).json('Error: You already have a reservation. Only one reservation can exist per user!'));
-            }
+      pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
+        .then (secondResponse => {
+          if (secondResponse.rows.length !== 0) { // Returns > 1 if user already has a reservation, erroring out below
+            return (res.status(400).json('Error: You already have a reservation. Only one reservation can exist per user!'));
+          }
 
-            pool.query(reservationQuery, reservationQueryVals)
-              .then (thirdResponse => {
-                pool.query(equipmentQuery, equipmentQueryVals)
-                .then (fourthResponse => {
-                  console.log('Starting reservation deletion timer for: ' + reservationTimer + 'ms...')
-                  setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
-                    deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
-                    console.log('Reservation for equipment with ID: ' + equipId + ', has expired!');
-                  }, reservationTimer) // Sets timer based on reservationTimer value defined at top of function
-                })
-
-                console.log('Created reservation for equipment ID: ' + equipId)
-                res.status(201).json('Successfully created reservation for this equipment!');
+          pool.query(reservationQuery, reservationQueryVals)
+            .then (thirdResponse => {
+              pool.query(equipmentQuery, equipmentQueryVals)
+              .then (fourthResponse => {
+                console.log('Starting reservation deletion timer for: ' + reservationTimer + 'ms...')
+                setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
+                  deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
+                  console.log('Reservation for equipment with ID: ' + equipId + ', has expired!');
+                }, reservationTimer) // Sets timer based on reservationTimer value defined at top of function
               })
-        })
-        .catch(e => console.error(e.stack))
-    });
+
+              console.log('Created reservation for equipment ID: ' + equipId)
+              res.status(201).json('Successfully created reservation for this equipment!');
+            })
+      })
+      .catch(e => console.error(e.stack))
+  });
 });
 
 app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) => { // pass two paramters to the HTTP del request
@@ -179,20 +180,20 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
   const deleteUsersReservationVals = [reservationId];   // Passes in the id via the request paramter so it knows which reservation to amend
 
   pool.query(confirmUserIdMatches, confirmUserIdMatchesVals)
-      .then (response => {
-        if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
-          return (res.status(403).json('Error: Reservation has already expired!'));
-        }
+    .then (response => {
+      if (response.rows.length === 0) { // Handles if result is empty aka reservation doesn't exist / has no data
+        return (res.status(403).json('Error: Reservation has already expired!'));
+      }
 
-        const getUserField = response.rows[0]; // Grabs the entire response
-        const dbReservationsUserId = getUserField["user_id"]; // Grabs the userId from the returned database query
+      const getUserField = response.rows[0]; // Grabs the entire response
+      const dbReservationsUserId = getUserField["user_id"]; // Grabs the userId from the returned database query
 
-        if (dbReservationsUserId != userId) { // Handles if the provided reservationId and userId don't match the reservation_id and user_id in psql db
-          return (res.status(404).json('This equipment is unavailable or is not reserved by you!'));
-        }
-        deleteReservationById(equipId);
-        res.status(200).json('Successfully deleted reservation with ID of: ' + equipId);
-    }).catch(e => console.error(e.stack));
+      if (dbReservationsUserId != userId) { // Handles if the provided reservationId and userId don't match the reservation_id and user_id in psql db
+        return (res.status(404).json('This equipment is unavailable or is not reserved by you!'));
+      }
+      deleteReservationById(equipId);
+      res.status(200).json('Successfully deleted reservation with ID of: ' + equipId);
+  }).catch(e => console.error(e.stack));
 });
 
 
