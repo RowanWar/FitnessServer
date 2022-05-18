@@ -138,13 +138,13 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
         const equipmentIsAvailable = getAvailableField["available"];
 
         if (equipmentIsAvailable == false) {
-          return (res.status(200).json('This equipment is already reserved!'));
+          return (res.status(400).json('This equipment is already reserved!'));
         }
 
         pool.query(checkIfUserHasReservation, checkIfUserHasReservationVals)
           .then (secondResponse => {
             if (secondResponse.rows.length !== 0) { // Returns > 1 if user already has a reservation, erroring out below
-              return (res.status(200).json('Error: You already have a reservation. Only one reservation can exist per user!'));
+              return (res.status(400).json('Error: You already have a reservation. Only one reservation can exist per user!'));
             }
 
             pool.query(reservationQuery, reservationQueryVals)
@@ -191,7 +191,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
           return (res.status(404).json('This equipment is unavailable or is not reserved by you!'));
         }
         deleteReservationById(equipId);
-        res.status(200).json('Successfully deleted reservation with ID of: ' + reservationId);
+        res.status(200).json('Successfully deleted reservation with ID of: ' + equipId);
     }).catch(e => console.error(e.stack));
 });
 
