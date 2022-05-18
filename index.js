@@ -32,14 +32,13 @@ app.get('/api/authenticateUser/:email', async (req, res) => {
       console.log('Error encountered: ' + err); // For security reasons, returns specific error to console-only
       return (res.json('Error encountered!'));
     }
-    // If email doesn't exist, return json message
-    else if (results.rows.length == 0) {
+    else if (results.rows.length == 0) { // If email doesn't exist, return out of function with no user found
       return (res.status(404).json('No user found with this email'));
     }
 
     const userData = results.rows[0]; // Assigns shorter identifier to first (and only) result from query
     console.log('\nSuccessfully authenticated user: ' + email + ', ID: ' + userData['user_id']);
-    res.status(200).json(userData['user_id']); // Accesses the returned object and returns only the ID to the API response
+    res.status(200).json(userData['user_id']); // Accesses the returned object and returns only the user's ID in the API response. Used to track the currently logged in user in app
   })
 })
 
@@ -50,34 +49,26 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
 
   const checkUserHasReservation = 'SELECT * FROM reservation WHERE user_id = $1';
   const checkUserHasReservationVals = [userId];
-
   pool.query(checkUserHasReservation, checkUserHasReservationVals)
       .then (response => {
-        if (response.rows.length === 0) {
+        if (response.rows.length === 0) { // If user does not have an equipment reservation result = 0, in which case if statement runs and safely returns.
           console.log('No equipment reserved by user with ID: ' + userId);
           return (res.status(200).json('No equipment reservations by userId: ' + userId))
         }
 
-        const result = response.rows[0];
-        const equipId = result['equip_id'];
+        const result = response.rows[0]; // Gets first element in response array and assigns it to var result
+        const equipId = result['equip_id']; // Extracts equip_id value and assigns it to equipId
+
 
         const getReservedEquipment = 'SELECT * FROM equipment e JOIN equipment_type et ON e.equip_type_id = et.equip_type_id WHERE equip_id = $1';
         const getReservedEquipmentVals = [equipId];
-        console.log(equipId);
-
         pool.query(getReservedEquipment, getReservedEquipmentVals)
           .then (secondResponse => {
             let reservationInfo = response.rows;
             let reservationEquipment = secondResponse.rows;
-            // let reservationInfo = reservation1.concat(reservation2);
-            // console.log(reservation2);
-            // reservationInfo.push(...reservationEquipment);
-            // console.log(reservationInfo);
+
             res.status(200).json({reservationInfo, reservationEquipment});
           })
-
-        // const reservedEquipment = response.rows;
-        // res.status(200).json({reservedEquipment});
       }).catch(e => console.error(e.stack))
 });
 
@@ -95,13 +86,12 @@ app.get('/api/getEquipment', async (req, res) => {
   })
 });
 
-
-app.get('/api/getReservation/:id', async (req, res) => { // Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
+// Grabs the id in the format of http://35.202.135.188:8080/api/getreservation/1
+app.get('/api/getReservation/:id', async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Queries the reservation via passed ID param above
-    pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => {
+    pool.query('SELECT * FROM reservation WHERE reservation_id = $1', [id], (err, results) => { // Queries the reservation via passed ID param above
 
       if (err) {
         // Returns detailed error to console only for securiy reasons.
@@ -128,7 +118,7 @@ app.get('/api/getReservation/:id', async (req, res) => { // Grabs the id in the 
 app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
   const equipId = req.params.equipId;
   const userId = req.params.userId;
-  let reservationTimer = 20000; // The timer for which reserved equipment lasts
+  let reservationTimer = 60000; // The timer for which reserved equipment lasts
 
   const checkEquipAvailable = 'SELECT available FROM equipment WHERE equip_id = $1'
   const checkEquipAvailableVals = [equipId]
@@ -165,7 +155,7 @@ app.put('/api/createReservation/:equipId/:userId', async (req, res) => {
                   setTimeout( () => { // Sets a timer to execute the delete function for a reservation from the db
                     deleteReservationById(equipId); // Runs function to delete reservation and update availability to true once timeout expires
                     console.log('Reservation for equipment with ID: ' + equipId + ', has expired!');
-                  }, reservationTimer)
+                  }, reservationTimer) // Sets timer based on reservationTimer value defined at top of function
                 })
 
                 console.log('Created reservation for equipment ID: ' + equipId)
