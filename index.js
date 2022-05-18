@@ -68,7 +68,7 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
           // let reservationInfo = response.rows;
           let reservedEquipment = secondResponse.rows; // Assigns shorter identifer to returned data
 
-          res.status(200).json(reservedEquipment);
+          res.status(200).json({reservedEquipment});
         })
     }).catch(e => console.error(e.stack))
 });
