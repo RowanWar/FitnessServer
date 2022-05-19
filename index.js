@@ -64,7 +64,6 @@ app.get('/api/checkUserHasReservation/:userId', async (req, res) => {
       const getReservedEquipmentVals = [equipId]; // These paramterized queries are declared here as equipId is returned from first query response
       pool.query(getReservedEquipment, getReservedEquipmentVals)
         .then (secondResponse => {
-          // let reservationInfo = response.rows;
           let reservedEquipment = secondResponse.rows; // Assigns shorter identifer to returned data
 
           res.status(200).json({reservedEquipment});
@@ -188,7 +187,7 @@ app.delete('/api/deleteReservation/:resId/:userId/:equipId', async (req, res) =>
       const dbReservationsUserId = getUserField["user_id"]; // Grabs the userId from the returned database query
 
       if (dbReservationsUserId != userId) { // Handles if the provided reservationId and userId don't match the reservation_id and user_id in psql db
-        return (res.status(404).json('This equipment is unavailable or is not reserved by you!'));
+        return (res.status(403).json('This equipment is unavailable or is not reserved by you!'));
       }
       deleteReservationById(equipId);
       res.status(200).json('Successfully deleted reservation with ID of: ' + equipId);
