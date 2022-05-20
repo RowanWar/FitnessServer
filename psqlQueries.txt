@@ -1,0 +1,56 @@
+CREATE TABLE user_table(
+	user_id SERIAL PRIMARY KEY,
+	username VARCHAR(20) NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	name VARCHAR(20) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	user_height INT,
+	squat_weight INT,
+	deadlift_weight INT,
+	bench_weight INT,
+	ohp_weight INT
+);
+INSERT INTO user_table(user_id, username, password, name, email, user_height, squat_weight, ohp_weight) VALUES($1, $2, $3, $4) RETURNING *';
+INSERT INTO user_table(username, password, name, email, user_height, squat_weight, ohp_weight) VALUES('Greggy', 'password2', 'Bobbot', 'Greg@myport.ac.uk', '160', '60', '20');
+INSERT INTO user_table(username, password, name, email, user_height, squat_weight, ohp_weight) VALUES('Steve', 'password3', 'Stevie', 'Steve@myport.ac.uk', '150', '30', '10');
+INSERT INTO user_table(username, password, name, email, user_height, deadlift_weight, bench_weight, squat_weight, ohp_weight) VALUES('David', 'password4', 'Alf', 'Dave@gmail.com', '150', '200', '140', '150', '50');
+
+CREATE TABLE reservation(
+    reservation_id SERIAL PRIMARY KEY,
+	equip_id INT NOT NULL,
+	user_id INT NOT NULL,
+	cat_name VARCHAR(20) NOT NULL,
+	category_desc VARCHAR(100) NOT NULL,
+	reserve_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (user_id) references user_table(user_id),
+	FOREIGN KEY (equip_id) references equipment(equip_id)
+);
+INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES('7', '1', 'Category Name', 'Category Description');
+INSERT INTO reservation(equip_id, user_id, cat_name, category_desc) VALUES('6', '2', 'Category Name', 'Category Description');
+
+UPDATE equipment SET available = true;
+CREATE TABLE equipment(
+   	equip_id SERIAL PRIMARY KEY,
+	equip_type_id INT NOT NULL,
+	is_available BOOLEAN NOT NULL,
+    	FOREIGN KEY (equip_type_id) references equipment_type(equip_type_id)
+);
+INSERT INTO equipment(equip_type_id, is_available) VALUES('1', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('3', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('1', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('2', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('4', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('5', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('1', 'True');
+INSERT INTO equipment(equip_type_id, is_available) VALUES('2', 'True');
+UPDATE equipment SET 
+
+CREATE TABLE equipment_type(
+	equip_type_id SERIAL PRIMARY KEY,
+	description VARCHAR(250)
+);
+INSERT INTO equipment_type(description) VALUES('Bench press');
+INSERT INTO equipment_type(description) VALUES('Squat rack');
+INSERT INTO equipment_type(description) VALUES('Lateral pulldown');
+INSERT INTO equipment_type(description) VALUES('Treadmill');
+INSERT INTO equipment_type(description) VALUES('Deadlift platform');
